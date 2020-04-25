@@ -1,0 +1,9 @@
+{
+  "name": "overtour_frontend",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Victor Vedenin",
+  "scripts": {},
+  "devDependencies": {},
+  "dependencies": {}
+}
