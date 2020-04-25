@@ -1,9 +1,19 @@
 {
   "name": "overtour_frontend",
   "version": "0.0.1",
-  "private": true,
   "author": "Victor Vedenin",
-  "scripts": {},
-  "devDependencies": {},
-  "dependencies": {}
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0",
+    "element-ui": "^2.4.11"
+  },
+  "devDependencies": {
+    "@nuxt/typescript-build": "^0.6.0"
+  }
 }
