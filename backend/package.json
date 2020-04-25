@@ -4,8 +4,8 @@
   "private": true,
   "author": "Victor Vedenin",
   "scripts": {
-    "build": "node ace build",
-    "start": "node ace serve --watch"
+    "dev": "node ace serve --watch",
+    "build": "node ace build"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^1.3.7",
