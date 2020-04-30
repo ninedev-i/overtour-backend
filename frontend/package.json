@@ -1,8 +1,8 @@
 {
   "name": "overtour_frontend",
   "version": "0.0.1",
-  "author": "Victor Vedenin",
   "private": true,
+  "author": "Victor Vedenin",
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
@@ -10,10 +10,17 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.10.1",
+    "@nuxtjs/dotenv": "^1.4.1",
+    "cross-env": "^7.0.2",
+    "element-ui": "^2.4.11",
     "nuxt": "^2.0.0",
-    "element-ui": "^2.4.11"
+    "vue-property-decorator": "^8.4.2",
+    "vuex-module-decorators": "^0.17.0"
   },
   "devDependencies": {
-    "@nuxt/typescript-build": "^0.6.0"
+    "@nuxt/typescript-build": "^0.6.0",
+    "less": "^3.11.1",
+    "less-loader": "^6.0.0"
   }
 }
