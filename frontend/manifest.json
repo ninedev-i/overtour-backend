@@ -1,0 +1,13 @@
+{
+  "name": "Overtour",
+  "short_name": "Overtour",
+  "icons": [{
+    "src": "/src/public/logo.png",
+    "sizes": "120x120",
+    "type": "image/png"
+  }],
+  "start_url": "/",
+  "background_color": "#fff",
+  "display": "standalone",
+  "theme_color": "#fff"
+}
