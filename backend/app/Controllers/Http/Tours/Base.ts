@@ -1,3 +1,5 @@
+import {DateTime} from 'luxon';
+
 export default class BaseTour {
     public title: string = '';
     public date_from: string = '';
@@ -28,11 +30,11 @@ export default class BaseTour {
         club?: number;
     } = {};
 
-    public getAllFields(): {club: number, date_to: string, title: string, date_from: string, link: string, type: string} {
+    public getAllFields(): {title: string, club: number, date_to: DateTime, date_from: DateTime, link: string, type: string} {
         return {
             title: this.title,
-            date_from: this.date_from,
-            date_to: this.date_to,
+            date_from: DateTime.fromISO(this.date_from),
+            date_to: DateTime.fromISO(this.date_to),
             link: this.link,
             club: this.club,
             type: this.type,

@@ -10,7 +10,7 @@
             <button @click="getData(4)">Получить данные pik</button>
             <button @click="getData(5)">Получить данные myway</button>
             <div v-show="isLoading">Загрузка данных</div>
-            <div v-if="output">Найдено {{output.report.found}}, добавлено {{output.report.unique}}, с ошибками {{output.report.broken}}.</div>
+            <div v-if="output.report">Найдено {{output.report.found}}, добавлено {{output.report.unique}}, с ошибками {{output.report.broken}}.</div>
 
             <el-table
                :data="output.tours"
@@ -64,7 +64,7 @@
 <script lang="ts">
     import {Vue, Component} from 'vue-property-decorator';
     import {Button, Table, TableColumn} from 'element-ui';
-    import axios from 'axios';
+    import {Axios} from '../util/axios';
 
     @Component({
         title: 'Админка | Overtour',
@@ -77,15 +77,15 @@
         }
     })
     export default class Admin extends Vue {
-        output = {
-            // tours: [],
-            // report: {
-            //    found: 0,
-            //    unique: 0,
-            //    broken: 0,
-            // }
+        output: object = {
+            tours: [],
+            report: {
+               found: 0,
+               unique: 0,
+               broken: 0,
+            }
         };
-        isLoading = false;
+        isLoading: boolean = false;
 
         indexMethod(index: number) {
             return index++;
@@ -94,7 +94,7 @@
         async getData(clubId: number) {
             this.output = {};
             this.isLoading = true;
-            const request = await axios.post('crawler/get_club_tours', {club: clubId});
+            const request = await Axios.post('crawler/get_club_tours', {club: clubId});
             this.output = request.data;
             this.isLoading = false;
         }
