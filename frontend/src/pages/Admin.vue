@@ -63,8 +63,17 @@
 
 <script lang="ts">
     import {Vue, Component} from 'vue-property-decorator';
-    import {Button, Table, TableColumn} from 'element-ui';
+    import {Button, Table, TableColumn, Notification} from 'element-ui';
     import {Axios} from '../util/axios';
+
+    interface IOutput {
+        tours?: object[];
+        report?: {
+            found: number;
+            unique: number;
+            broken: number;
+        }
+    }
 
     @Component({
         title: 'Админка | Overtour',
@@ -77,12 +86,12 @@
         }
     })
     export default class Admin extends Vue {
-        output: object = {
+        output: IOutput = {
             tours: [],
             report: {
-               found: 0,
-               unique: 0,
-               broken: 0,
+                found: 0,
+                unique: 0,
+                broken: 0,
             }
         };
         isLoading: boolean = false;
@@ -94,9 +103,21 @@
         async getData(clubId: number) {
             this.output = {};
             this.isLoading = true;
-            const request = await Axios.post('crawler/get_club_tours', {club: clubId});
-            this.output = request.data;
+            this.output = await Axios
+                .post('crawler/get_club_tours', {club: clubId})
+                .then((res) => res.data);
             this.isLoading = false;
+            let message = `<b>найдено</b>: ${this.output.report.found}<br /> <b>добавлено</b>: ${this.output.report.unique}`;
+            if (this.output.report.broken) {
+                message += `<br /><b>с ошибками</b>: ${this.output.report.broken}`;
+            }
+            Notification.success({
+                title: '',
+                dangerouslyUseHTMLString: true,
+                message,
+                position: 'bottom-right',
+                duration: 0
+            })
         }
 
         async parseTour(/*id: number*/) {

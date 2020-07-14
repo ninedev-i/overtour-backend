@@ -1,6 +1,6 @@
 import {JSDOM} from 'jsdom';
 import * as request from 'request-promise';
-import {forEach} from 'async-foreach';
+import each from 'async/each';
 import {DateTime} from 'luxon';
 import Draft from 'App/Models/Draft';
 import BaseTour from './Tours/Base';
@@ -160,7 +160,7 @@ export default class Crawler {
             allNodes = document.querySelectorAll(blockSelector);
         }
 
-        forEach(allNodes, async (node) => {
+        await each(allNodes, async function (node) {
             const tour = this.createClass(className, node);
             this.tours.push(tour);
 
@@ -174,11 +174,13 @@ export default class Crawler {
                 .count('*', 'total');
 
             if (!hasEqualRecord[0].total) {
-                // TODO: разобраться почему теряется контекст
-                // console.error(this.report.unique)
                 this.report.unique++;
-                await Draft.create(tour.getAllFields());
+                try {
+                    await Draft.create(tour.getAllFields());
+                } catch (e) {
+                    this.report.broken++;
+                }
             }
-        });
+        }.bind(this));
     }
 }
