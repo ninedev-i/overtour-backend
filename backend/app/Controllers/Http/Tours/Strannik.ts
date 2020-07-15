@@ -1,16 +1,19 @@
 import BaseTour from './Base';
 
 export default class Strannik extends BaseTour {
-    constructor(document) {
+    constructor(document, isDetailed: boolean) {
         super();
         this.getTitle(document);
         this.getDate(document);
         this.getLink(document);
-        // this.getPrice(document);
-        // this.getImage(document);
-        // this.getDescription(document);
-        // this.getRegion(region);
         this.club = 1;
+
+        if (isDetailed) {
+            // this.getPrice(document);
+            // this.getImage(document);
+            // this.getDescription(document);
+            // this.getRegion(region);
+        }
     }
 
     getTitle(document) {

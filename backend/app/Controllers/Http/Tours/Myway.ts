@@ -1,16 +1,28 @@
 import BaseTour from './Base';
+// import {Duration, Interval, DateTime} from 'luxon';
 
 export default class Myway extends BaseTour {
-    constructor(document) {
+    constructor(document: object, isDetailed: boolean = false) {
         super();
-        this.getTitle(document);
-        this.getDate(document);
-        this.getLink(document);
-        // this.getPrice(document);
-        // this.getImage(document);
-        // this.getDescription(document);
-        // this.getRegion(region);
         this.club = 5;
+
+        if (!document) {
+            return
+        }
+
+        if (isDetailed) {
+            this.getPrice(document);
+            this.getImage(document);
+            this.getDescription(document);
+            this.getRegion(document);
+        } else {
+            this.getTitle(document);
+            this.getDate(document);
+            this.getLink(document);
+
+            // FIXME: оно все равно не пишетася в базу, нужно подумать
+            this.getDifficulty(document);
+        }
     }
 
     getTitle(document) {
@@ -46,25 +58,6 @@ export default class Myway extends BaseTour {
         }
     }
 
-    getPrice(document) {
-        try {
-            const price = document.querySelector('.price .number').textContent;
-            this.price = +price.replace(/[\s, \W]/g, '');
-        } catch (e) {
-            this.post.price = e.message;
-            this.type = 'error';
-        }
-    }
-
-    getImage(document) {
-        try {
-            this.image = document.querySelector('.block_image img').getAttribute('src');
-        } catch (e) {
-            this.post.image = e.message;
-            this.type = 'error';
-        }
-    }
-
     getLink(document) {
         try {
             const host = 'https://mwtravel.ru/';
@@ -75,9 +68,67 @@ export default class Myway extends BaseTour {
         }
     }
 
+    getDifficulty(document) {
+        try {
+            switch (document.querySelector('.difficulty-link').id) {
+                case 'easy':
+                    this.difficulty = 1;
+                    break;
+                case 'complicated':
+                    this.difficulty = 2;
+                    break;
+                case 'normal':
+                    this.difficulty = 3;
+                    break;
+                case 'hard':
+                    this.difficulty = 4;
+                    break;
+                case 'very_hard':
+                    this.difficulty = 4;
+                    break;
+            }
+        } catch (e) {
+            this.post.link = e.message;
+            this.type = 'error';
+        }
+    }
+
+
+    //  Далее методы для получения более подробной информации
+
+    getRegion(document) {
+        try {
+            const crumbs = document.querySelectorAll('.breadcrumbs a')
+            this.region = crumbs[crumbs.length - 1].textContent;
+        } catch (e) {
+            this.post.region = e.message;
+        }
+    }
+
+    getPrice(document) {
+        try {
+            const price = document.querySelector('#tour_payment strong').textContent;
+            this.price = +price.replace(/[\s, \W]/g, '');
+        } catch (e) {
+            this.post.price = e.message;
+            this.type = 'error';
+        }
+    }
+
+    getImage(document) {
+        try {
+            let image = document.querySelector('.header-image').style.backgroundImage;
+            image = image.replace(/url\(/g, '').replace(/\)/g, '')
+            this.image = image;
+        } catch (e) {
+            this.post.image = e.message;
+            this.type = 'error';
+        }
+    }
+
     getDescription(document) {
         try {
-            let description = document.querySelector('.description').textContent.trim();
+            let description = document.querySelector('#tour_about').textContent.trim();
             description = description.replace('/\n/g',' ');
             this.description = description;
         } catch (e) {
@@ -85,12 +136,4 @@ export default class Myway extends BaseTour {
             this.type = 'error';
         }
     }
-
-    // getRegion(document) {
-    //    try {
-    //       this.region = region;
-    //    } catch (e) {
-    //       this.post.region = e.message;
-    //    }
-    // }
 }

@@ -1,6 +1,7 @@
 import {DateTime} from 'luxon';
 
 export default class BaseTour {
+    public id: number;
     public title: string = '';
     public date_from: string = '';
     public date_to: string = '';
@@ -51,5 +52,14 @@ export default class BaseTour {
 
     public hasErrors(): boolean {
         return !!Object.entries(this.post).length;
+    }
+
+    public setPropsFromObject(obj): void {
+        this.title = obj.title;
+        this.date_from = obj.date_from.toISODate();
+        this.date_to = obj.date_to.toISODate();
+        this.club = obj.club;
+        this.link = obj.link;
+        this.duration = Math.floor(( Date.parse(this.date_to) - Date.parse(this.date_from) ) / 86400000) + 1;
     }
 }

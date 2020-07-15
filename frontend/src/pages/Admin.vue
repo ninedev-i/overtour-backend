@@ -51,8 +51,7 @@
                   <template>
                      <el-tag
                         type="primary"
-                        @click="parseTour"
-                        disable-transitions>Парсить</el-tag>
+                        @click="parseTour(scope.row.id)">Парсить</el-tag>
                   </template>
                </el-table-column>
             </el-table>
@@ -120,8 +119,8 @@
             })
         }
 
-        async parseTour(/*id: number*/) {
-            // debugger
+        async parseTour(tourId: number) {
+            return Axios.post('crawler/get_tour_detail', {tourId})
         }
     };
 </script>
