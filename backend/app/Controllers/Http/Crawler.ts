@@ -203,20 +203,19 @@ export default class Crawler {
         }.bind(this));
     }
 
-    async getTour(/*{request}*/) {
-        // let {tourId} = request.all();
+    async getTourDetails({request}) {
+        const {tourInfo} = request.all();
+        // const node = await this.getDataFromUrl(draft.link);
 
-        const url = 'https://mwtravel.ru/travel-all/ascent-kazbeg-georgia/';
-        const node = await this.getDataFromUrl(url);
+        const tour = this.createClass(tourInfo.club, node, true);
+        return await Draft.find(tourInfo.id);
 
-        // const tour = this.createClass(5, node, true);
-        const tour = await Draft.find(1);
-        const tourClass = new Myway(node, true);
+        // const tourClass = new Myway(node, true);
 
-        if (tour) {
-            tourClass.setPropsFromObject(tour)
-        }
-
-        return tourClass;
+        // if (tour) {
+        //     tourClass.setPropsFromObject(tour)
+        // }
+        //
+        // return tourClass;
     }
 }

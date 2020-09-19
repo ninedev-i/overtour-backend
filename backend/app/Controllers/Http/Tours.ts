@@ -1,4 +1,5 @@
 import Tour from 'App/Models/Tour';
+import Draft from 'App/Models/Draft';
 import moment from 'moment';
 
 export default class Tours {
@@ -54,5 +55,9 @@ export default class Tours {
         return regions.map(direction => {
             return {value: direction.region};
         });
+    }
+
+    public async getAllDrafts() {
+        return await Draft.query();
     }
 }

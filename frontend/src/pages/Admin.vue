@@ -11,6 +11,7 @@
             <button @click="getData(5)">Получить данные myway</button>
             <div v-show="isLoading">Загрузка данных</div>
             <div v-if="output.report">Найдено {{output.report.found}}, добавлено {{output.report.unique}}, с ошибками {{output.report.broken}}.</div>
+           <button @click="showAllDrafts()">показать все черновики</button>
 
             <el-table
                :data="output.tours"
@@ -48,10 +49,10 @@
                />
                <el-table-column
                   width="100">
-                  <template>
+                  <template slot-scope="scope">
                      <el-tag
                         type="primary"
-                        @click="parseTour(scope.row.id)">Парсить</el-tag>
+                        @click="parseTour(scope.row)">Парсить</el-tag>
                   </template>
                </el-table-column>
             </el-table>
@@ -119,8 +120,12 @@
             })
         }
 
-        async parseTour(tourId: number) {
-            return Axios.post('crawler/get_tour_detail', {tourId})
+        async parseTour(tourInfo: object) {
+            return Axios.post('crawler/get_tour_detail', {tourInfo})
+        }
+
+        async showAllDrafts(): Promise<void> {
+            this.output.tours = await Axios.get('get_all_drafts').then(res => res.data);
         }
     };
 </script>
