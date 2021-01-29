@@ -3,13 +3,12 @@ import * as request from 'request-promise';
 import each from 'async/each';
 import {DateTime} from 'luxon';
 import Draft from 'App/Models/Draft';
-// import Tour from 'App/Models/Tour';
 import BaseTour from './Tours/Base';
-import Strannik from './Tours/Strannik';
-import Vpohod from './Tours/Vpohod';
-import Perehod from './Tours/Perehod';
-import Pik from './Tours/Pik';
-import Myway from './Tours/Myway';
+import {parseClubStrannik} from './Tours/Strannik';
+import {parseClubVpohod} from './Tours/Vpohod';
+import {parseClubPerehod} from './Tours/Perehod';
+import {parseClubPik} from './Tours/Pik';
+import {parseClubMyway} from './Tours/Myway';
 
 interface IReport {
     found: number;
@@ -18,7 +17,7 @@ interface IReport {
 }
 
 export default class Crawler {
-    protected clubs = {
+    public clubs = {
         1: {
             id: 1,
             tourClass: 'Strannik',
@@ -86,25 +85,10 @@ export default class Crawler {
         4: {
             id: 4,
             tourClass: 'Pik',
-            selector: '',
+            selector: '.columns.mb-6 .trip-card',
             links: [
-                'https://turclub-pik.ru/search_ajax/trips/?region-1=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-2=on&page=1',
-                'https://turclub-pik.ru/search_ajax/trips/?region-2=on&page=2',
-                'https://turclub-pik.ru/search_ajax/trips/?region-2=on&page=3',
-                'https://turclub-pik.ru/search_ajax/trips/?region-2=on&page=4',
-                'https://turclub-pik.ru/search_ajax/trips/?region-3=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-4=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-6=on&page=1',
-                'https://turclub-pik.ru/search_ajax/trips/?region-6=on&page=2',
-                'https://turclub-pik.ru/search_ajax/trips/?region-7=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-24=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-36=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-47=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-41=on',
-                'https://turclub-pik.ru/search_ajax/trips/?region-44=on',
+                'https://turclub-pik.ru/search/?page=30&sorting=date&limit=20&routes_limit=20&regions=3,6,7,4,2,36,24,1,41,44',
             ],
-            isApi: true
         },
         5: {
             id: 5,
@@ -132,30 +116,30 @@ export default class Crawler {
             return JSON.parse(website);
         } else {
             const document = new JSDOM(website).window.document;
-            return isMultiple ? document.querySelectorAll(selector) : document.querySelector(selector);
+            return isMultiple ? Array.from(document.querySelectorAll(selector)) : document.querySelector(selector);
         }
     }
 
-    protected createClass(clubId: number, data: object, isDetailed: boolean = false): BaseTour {
+    protected parseClub(clubId: number, data: Element[]): BaseTour[] {
         switch (clubId) {
             case 1:
-                return new Strannik(data, isDetailed);
+                return parseClubStrannik(data);
             case 2:
-                return new Vpohod(data, isDetailed);
+                return parseClubVpohod(data);
             case 3:
-                return new Perehod(data, isDetailed);
+                return parseClubPerehod(data);
             case 4:
-                return new Pik(data, isDetailed);
-            default:
+                return parseClubPik(data);
             case 5:
-                return new Myway(data, isDetailed);
+            default:
+                return parseClubMyway(data);
         }
     }
 
     /**
      * Запрос на парсинг турклуба
      */
-    async getClubTours({request}): Promise<{report: IReport, tours: unknown[]}> {
+    async getClubTours({request}): Promise<{report: IReport, tours: any[]}> {
         let {club} = request.all();
         club = this.clubs[club];
         for (let url of club.links) {
@@ -177,9 +161,10 @@ export default class Crawler {
      */
     async parseTourDrafts(url: string, clubId: number, blockSelector: string, isApi: boolean = false) {
         const allNodes = await this.getDataFromUrl(url, blockSelector, true, isApi);
-        await each(allNodes, async function (node) {
-            const tour = this.createClass(clubId, node);
 
+        const tours = this.parseClub(clubId, allNodes);
+
+        await each(tours, async function(tour) {
             this.report.found++;
             this.report.broken += +tour.hasErrors();
 
@@ -203,12 +188,12 @@ export default class Crawler {
         }.bind(this));
     }
 
-    async getTourDetails({request}) {
-        const {tourInfo} = request.all();
+    async getTourDetails(/*{request}*/) {
+        // const {tourInfo} = request.all();
         // const node = await this.getDataFromUrl(draft.link);
 
-        const tour = this.createClass(tourInfo.club, node, true);
-        return await Draft.find(tourInfo.id);
+        // const tour = this.createClass(tourInfo.club, node, true);
+        // return await Draft.find(tourInfo.id);
 
         // const tourClass = new Myway(node, true);
 

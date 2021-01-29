@@ -1,7 +1,11 @@
 import BaseTour from './Base';
 
+export function parseClubPerehod(nodes: Element[]): BaseTour[] {
+    return nodes.map((node) => new Perehod(node));
+}
+
 export default class Perehod extends BaseTour {
-    constructor(document, isDetailed: boolean) {
+    constructor(document, isDetailed?: boolean) {
         super();
         this.getTitle(document);
         this.getDate(document);
@@ -27,7 +31,7 @@ export default class Perehod extends BaseTour {
 
     getDate(document) {
         try {
-            const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+            const months = ['янв', 'фев', 'март', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'нояб', 'дек'];
             let dates = document.querySelector('.b-schedule-table__date').textContent.trim();
             dates = dates.match(/(\d+)\s(\W+)\s(\d+)\s+\-\s+(\d+)\s(\W+)\s(\d+)/i);
             let month_from: string | number = months.indexOf(dates[2]) + 1;

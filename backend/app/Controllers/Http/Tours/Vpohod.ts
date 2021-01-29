@@ -1,7 +1,11 @@
 import BaseTour from './Base';
 
+export function parseClubVpohod(nodes: Element[]): BaseTour[] {
+    return nodes.map((node) => new Vpohod(node));
+}
+
 export default class Vpohod extends BaseTour {
-    constructor(document, isDetailed: boolean) {
+    constructor(document, isDetailed: boolean = false) {
         super();
         this.getTitle(document);
         this.getDate(document);
@@ -27,7 +31,7 @@ export default class Vpohod extends BaseTour {
 
     getDate(document) {
         try {
-            let dates = document.querySelector('.main_page_hikes_info').childNodes[2].childNodes[1];
+            let dates = document.querySelector('.main_page_hikes_info').childNodes[1].childNodes[1];
             dates = dates.textContent.trim();
             dates = dates.match(/c (.*) по (.*)/i);
             const date_to = dates[2].split('.');

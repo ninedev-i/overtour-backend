@@ -22,6 +22,10 @@
     "types": [
       "@adonisjs/core",
       "@adonisjs/lucid"
+    ],
+    "lib": [
+      "es2016",
+      "dom"
     ]
   }
 }

@@ -8,16 +8,18 @@
     "build": "node ace build"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^2.1.3",
-    "adonis-preset-ts": "^1.0.4",
-    "pino-pretty": "^4.0.1",
-    "typescript": "^3.9.6",
-    "youch": "^2.0.10",
-    "youch-terminal": "^1.0.0"
+    "@adonisjs/assembler": "^3.0.0",
+    "adonis-preset-ts": "^1.1.0",
+    "pino-pretty": "^4.3.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3",
+    "youch": "^2.1.1",
+    "youch-terminal": "^1.0.1"
   },
   "dependencies": {
     "@adonisjs/ace": "^6.9.3",
-    "@adonisjs/core": "5.0.0-preview-rc-1.9",
+    "@adonisjs/core": "^5.0.4-preview-rc",
+    "@adonisjs/repl": "^1.0.0",
     "@adonisjs/fold": "^6.3.5",
     "@adonisjs/session": "^3.0.4",
     "@adonisjs/lucid": "^8.0.5",

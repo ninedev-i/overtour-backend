@@ -1,7 +1,11 @@
 import BaseTour from './Base';
 
+export function parseClubPik(nodes: Element[]): BaseTour[] {
+    return nodes.map((node) => new Pik(node));
+}
+
 export default class Pik extends BaseTour {
-    constructor(document, isDetailed: boolean) {
+    constructor(document, isDetailed: boolean = false) {
         super();
         this.getTitle(document);
         this.getDate(document);
@@ -18,7 +22,7 @@ export default class Pik extends BaseTour {
 
     getTitle(document) {
         try {
-            this.title = document.name;
+            this.title = document.querySelector('.trip-card-title').textContent;
         } catch (e) {
             this.post.title = e.message;
             this.type = 'error';
@@ -28,7 +32,8 @@ export default class Pik extends BaseTour {
     getDate(document) {
         try {
             const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-            let dates = document['duration_explained'].match(/с (\d+)\s*(\W*)\s*(\d*) по (\d+) (\W*) (\d+)/i);
+            let dates = document.querySelector('.trip-card-description').textContent;
+            dates = dates.match(/с (\d+)\s*(\W*)\s*(\d*) по (\d+) (\W*) (\d+)/i);
 
             let date_to = dates[4] < 10 ? `0${dates[4]}` : dates[4];
             let month_to: string | number = months.indexOf(dates[5]) + 1;
@@ -70,7 +75,7 @@ export default class Pik extends BaseTour {
     getLink(document) {
         try {
             const host = 'https://turclub-pik.ru';
-            this.link = host + document['absolute_url'];
+            this.link = host + document.querySelector('a').getAttribute('href');
         } catch (e) {
             this.post.link = e.message;
             this.type = 'error';

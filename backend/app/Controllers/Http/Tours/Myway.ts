@@ -1,5 +1,8 @@
 import BaseTour from './Base';
-// import {Duration, Interval, DateTime} from 'luxon';
+
+export function parseClubMyway(nodes: Element[]): BaseTour[] {
+    return nodes.map((node) => new Myway(node));
+}
 
 export default class Myway extends BaseTour {
     constructor(document: object, isDetailed: boolean = false) {
