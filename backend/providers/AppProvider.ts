@@ -1,6 +1,8 @@
 import { IocContract } from '@adonisjs/fold'
 
 export default class AppProvider {
+  public static needsApplication = true
+
   constructor (protected $container: IocContract) {
   }
 

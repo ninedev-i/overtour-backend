@@ -1,2 +1,4 @@
 .idea
 runner.ts
+package.json
+yarn.lock

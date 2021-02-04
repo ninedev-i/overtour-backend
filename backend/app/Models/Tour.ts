@@ -38,6 +38,9 @@ export default class Tour extends BaseModel {
     @column({})
     public tags: string;
 
+    @column({})
+    public club: number;
+
     @column.dateTime({autoCreate: true})
     public created_at: DateTime;
 

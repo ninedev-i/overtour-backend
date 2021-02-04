@@ -3,8 +3,9 @@ import * as request from 'request-promise';
 import each from 'async/each';
 import {DateTime} from 'luxon';
 import Draft from 'App/Models/Draft';
+import Tour from 'App/Models/Tour';
 import BaseTour from './Tours/Base';
-import {parseClubStrannik} from './Tours/Strannik';
+import {parseClubStrannik, parseDetailsStrannik} from './Tours/Strannik';
 import {parseClubVpohod} from './Tours/Vpohod';
 import {parseClubPerehod} from './Tours/Perehod';
 import {parseClubPik} from './Tours/Pik';
@@ -168,13 +169,13 @@ export default class Crawler {
             this.report.found++;
             this.report.broken += +tour.hasErrors();
 
-            const hasEqualRecord = await Draft.query()
+            const equalDraft = await Draft.query()
                 .where('title', tour.title)
                 .where('date_from', '=', DateTime.fromISO(tour.date_from).toSQLDate())
                 .where('date_to', '=', DateTime.fromISO(tour.date_to).toSQLDate())
-                .count('*', 'total');
+                .first();
 
-            if (!hasEqualRecord[0].total) {
+            if (!equalDraft?.id) {
                 this.report.unique++;
                 try {
                     const draft = await Draft.create(tour.getAllFields());
@@ -182,25 +183,37 @@ export default class Crawler {
                 } catch (e) {
                     this.report.broken++;
                 }
+            } else {
+                tour.id = equalDraft?.id;
             }
 
             this.tours.push(tour);
         }.bind(this));
     }
 
-    async getTourDetails(/*{request}*/) {
-        // const {tourInfo} = request.all();
-        // const node = await this.getDataFromUrl(draft.link);
+    async getTourDetails({request}) {
+        const {tourInfo} = request.all();
 
-        // const tour = this.createClass(tourInfo.club, node, true);
-        // return await Draft.find(tourInfo.id);
+        const draftId = tourInfo.id;
+        delete tourInfo.id;
 
-        // const tourClass = new Myway(node, true);
+        const node = await this.getDataFromUrl(tourInfo.link);
 
-        // if (tour) {
-        //     tourClass.setPropsFromObject(tour)
-        // }
-        //
-        // return tourClass;
+        const fullTourData = parseDetailsStrannik(node, tourInfo);
+
+        // @ts-ignore
+        delete fullTourData.type;
+        // @ts-ignore
+        delete fullTourData.post;
+
+        // @ts-ignore
+        await Tour.create(fullTourData.getAllFields())
+            .then(({id}) => fullTourData.downloadCover(node, id));
+        const draft = await Draft.findOrFail(draftId);
+        draft.type = 'added';
+
+        await draft.save()
+
+        return draft;
     }
 }

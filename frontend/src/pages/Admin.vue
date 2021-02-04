@@ -4,17 +4,15 @@
       <page :whitePage="true" :padding="true">
          <template #content>
             <h1>Админка</h1>
-            <button @click="getData(1)">Получить данные strannik</button>
-            <button @click="getData(2)">Получить данные vpoxod</button>
-            <button @click="getData(3)">Получить данные perexod</button>
-            <button @click="getData(4)">Получить данные pik</button>
-            <button @click="getData(5)">Получить данные myway</button>
-            <div v-show="isLoading">Загрузка данных</div>
-            <div v-if="output.report">Найдено {{output.report.found}}, добавлено {{output.report.unique}}, с ошибками {{output.report.broken}}.</div>
-           <button @click="showAllDrafts()">показать все черновики</button>
+            <el-button size="mini" :loading="dataLoadingId === 1" @click="getData(1)">Получить данные strannik</el-button>
+            <el-button size="mini" :loading="dataLoadingId === 2" @click="getData(2)">Получить данные vpoxod</el-button>
+            <el-button size="mini" :loading="dataLoadingId === 3" @click="getData(3)">Получить данные perexod</el-button>
+            <el-button size="mini" :loading="dataLoadingId === 4" @click="getData(4)">Получить данные pik</el-button>
+            <el-button size="mini" :loading="dataLoadingId === 5" @click="getData(5)">Получить данные myway</el-button>
+            <el-button size="mini" :loading="dataLoadingId === 'all'" type="success" @click="showAllDrafts()">показать все черновики</el-button>
 
             <el-table
-               :data="output.tours"
+               :data="tours"
                stripe
                style="width: 100%">
                <el-table-column
@@ -28,12 +26,12 @@
                />
                <el-table-column
                   label="C"
-                  width="120">
+                  width="140">
                   <template slot-scope="scope">{{moment(scope.row.date_from).format('D MMMM YYYY')}}</template>
                </el-table-column>
                <el-table-column
                   label="По"
-                  width="120">
+                  width="140">
                   <template slot-scope="scope">{{moment(scope.row.date_to).format('D MMMM YYYY')}}</template>
                </el-table-column>
                <el-table-column
@@ -43,16 +41,16 @@
                   </template>
                </el-table-column>
                <el-table-column
-                  prop="type"
-                  label="Тип"
-                  width="70"
-               />
-               <el-table-column
-                  width="100">
+                  align="right"
+                  width="120">
                   <template slot-scope="scope">
-                     <el-tag
-                        type="primary"
-                        @click="parseTour(scope.row)">Парсить</el-tag>
+                     <el-button
+                        size="mini"
+                        :disabled="scope.row.type !== 'draft'"
+                        :loading="!scope.row.type"
+                        @click="parseTour(scope.row)">
+                           {{scope.row.type === 'added' ? 'Готово' : 'Парсить'}}
+                        </el-button>
                   </template>
                </el-table-column>
             </el-table>
@@ -62,12 +60,22 @@
 </template>
 
 <script lang="ts">
-    import {Vue, Component} from 'vue-property-decorator';
-    import {Button, Table, TableColumn, Notification} from 'element-ui';
+    import {Component, Vue} from 'vue-property-decorator';
+    import {Button, Notification, Table, TableColumn} from 'element-ui';
     import {Axios} from '../util/axios';
 
+    interface IDraftData {
+        id: number;
+        title: string;
+        date_from: string;
+        date_to: string;
+        club: number;
+        link: string;
+        type: ('draft'|'added'|'ignored'|null);
+    }
+
     interface IOutput {
-        tours?: object[];
+        tours?: IDraftData[];
         report?: {
             found: number;
             unique: number;
@@ -86,30 +94,37 @@
         }
     })
     export default class Admin extends Vue {
-        output: IOutput = {
-            tours: [],
-            report: {
-                found: 0,
-                unique: 0,
-                broken: 0,
-            }
+        tours: IDraftData[] = [];
+        report: {
+           found: number;
+           unique: number;
+           broken: number;
+        } = {
+           found: 0,
+           unique: 0,
+           broken: 0,
         };
-        isLoading: boolean = false;
+
+        dataLoadingId: number|null|'all' = null;
 
         indexMethod(index: number) {
             return index++;
         }
 
         async getData(clubId: number) {
-            this.output = {};
-            this.isLoading = true;
-            this.output = await Axios
+            this.tours = [];
+            this.dataLoadingId = clubId;
+            const {tours, report} = await Axios
                 .post('crawler/get_club_tours', {club: clubId})
                 .then((res) => res.data);
-            this.isLoading = false;
-            let message = `<b>найдено</b>: ${this.output.report.found}<br /> <b>добавлено</b>: ${this.output.report.unique}`;
-            if (this.output.report.broken) {
-                message += `<br /><b>с ошибками</b>: ${this.output.report.broken}`;
+
+            this.tours = tours;
+            this.report = report;
+
+            this.dataLoadingId = null;
+            let message = `<b>найдено</b>: ${this.report.found}<br /> <b>добавлено</b>: ${this.report.unique}`;
+            if (this.report.broken) {
+                message += `<br /><b>с ошибками</b>: ${this.report.broken}`;
             }
             Notification.success({
                 title: '',
@@ -120,12 +135,25 @@
             })
         }
 
-        async parseTour(tourInfo: object) {
-            return Axios.post('crawler/get_tour_detail', {tourInfo})
+        async parseTour(tourInfo: IDraftData) {
+            tourInfo.type = null;
+
+            return Axios
+               .post('crawler/get_tour_detail', {tourInfo})
+               .then(({data}) => {
+                  this.tours = this.tours.slice(0).map((item) => {
+                     if (item && item.id === data.id) {
+                        item = data;
+                     }
+                     return item;
+                  });
+               })
         }
 
         async showAllDrafts(): Promise<void> {
-            this.output.tours = await Axios.get('get_all_drafts').then(res => res.data);
+            this.dataLoadingId = 'all';
+            this.tours = await Axios.get('get_all_drafts').then(res => res.data);
+            this.dataLoadingId = null;
         }
     };
 </script>
@@ -138,4 +166,7 @@
          overflow hidden
          text-overflow ellipsis
          white-space nowrap
+
+         &:hover
+            color #9acd32
 </style>

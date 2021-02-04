@@ -5,7 +5,7 @@
   "author": "Victor Vedenin",
   "scripts": {
     "dev": "node ace serve --watch",
-    "build": "node ace build"
+    "build": "node ace build --production"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^3.0.0",
@@ -19,12 +19,12 @@
   "dependencies": {
     "@adonisjs/ace": "^6.9.3",
     "@adonisjs/core": "^5.0.4-preview-rc",
-    "@adonisjs/repl": "^1.0.0",
     "@adonisjs/fold": "^6.3.5",
-    "@adonisjs/session": "^3.0.4",
     "@adonisjs/lucid": "^8.0.5",
+    "@adonisjs/repl": "^1.0.0",
+    "@adonisjs/session": "^3.0.4",
     "async": "^3.2.0",
-    "jimp": "^0.14.0",
+    "jimp": "^0.16.1",
     "jsdom": "^16.2.0",
     "moment": "^2.24.0",
     "mysql": "^2.18.1",

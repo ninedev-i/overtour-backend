@@ -1,5 +1,21 @@
 import {DateTime} from 'luxon';
 
+interface IBaseTourProps {
+    title?: string;
+    date_from?: string|DateTime;
+    date_to?: string|DateTime;
+    duration?: number;
+    image?: string;
+    description?: string;
+    price?: number;
+    difficulty?: number;
+    region?: string;
+    tags?: string[]|string;
+    link?: string;
+    club?: number;
+    type?: string;
+}
+
 export default class BaseTour {
     public id: number;
     public title: string = '';
@@ -16,29 +32,22 @@ export default class BaseTour {
     public club: number = 0;
     public type: string = 'draft';
     // для описания ошибок добавления
-    public post: {
-        title?: string;
-        date_from?: string;
-        date_to?: string;
-        duration?: number;
-        image?: string;
-        description?: string;
-        price?: number;
-        difficulty?: number;
-        region?: string;
-        tags?: string[];
-        link?: string;
-        club?: number;
-    } = {};
+    public post: IBaseTourProps = {};
 
-    public getAllFields(): {title: string, club: number, date_to: DateTime, date_from: DateTime, link: string, type: string} {
+    public getAllFields(): IBaseTourProps {
         return {
             title: this.title,
             date_from: DateTime.fromISO(this.date_from),
             date_to: DateTime.fromISO(this.date_to),
             link: this.link,
             club: this.club,
-            type: this.type,
+            duration: 1,
+            image: this.image,
+            description: this.description,
+            price: this.price,
+            difficulty: this.difficulty,
+            region: this.region,
+            tags: Array.isArray(this.tags) ? this.tags.join(): this.tags,
         }
     }
 

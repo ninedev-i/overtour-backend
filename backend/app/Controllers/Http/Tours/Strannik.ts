@@ -1,5 +1,6 @@
 import BaseTour from './Base';
 import {parseDates} from '../../Helpers/Parse';
+import {downloadImage} from 'App/Controllers/Helpers/ImageDonwload';
 
 interface IInitData {
     date_from: string;
@@ -29,22 +30,30 @@ export function parseClubStrannik(nodes: Element[]): BaseTour[] {
     return output.map((tour) => new Strannik(tour));
 }
 
+export function parseDetailsStrannik(document: Element, initData: any): Strannik {
+    return new Strannik({document, initData}, true);
+}
 
 export default class Strannik extends BaseTour {
     constructor({document, initData}: IStrannikConstructorData, isDetailed?: boolean) {
         super();
-        const {date_from, date_to} = initData;
-
-        this.getTitle(document);
-        this.getDate([date_from, date_to]);
-        this.getLink(document);
-        this.club = 1;
 
         if (isDetailed) {
-            // this.getPrice(document);
+            for (let field in initData) {
+                this[field] = initData[field];
+            }
+            this.getPrice(document);
             // this.getImage(document);
-            // this.getDescription(document);
-            // this.getRegion(region);
+            this.getDescription(document);
+            this.getRegion(document);
+        } else {
+            this.club = 1;
+            const {date_from, date_to} = initData;
+
+            this.getTitle(document);
+            this.getDate([date_from, date_to]);
+            this.getLink(document);
+            this.getDifficulty(document);
         }
     }
 
@@ -60,23 +69,11 @@ export default class Strannik extends BaseTour {
     getDate([date_from, date_to]) {
         this.date_from = date_from;
         this.date_to = date_to;
-        // try {
-        //     let dates = document.querySelector('.date_value').textContent.trim();
-        //     dates = dates.match(/(.*) - (.*)/i);
-        //     const date_from = dates[1].match(/(.*)\.(.*)\/(.*)/i);
-        //     const date_to = dates[2].match(/(.*)\.(.*)\/(.*)/i);
-        //     this.date_from = `20${date_from[3]}-${date_from[2]}-${date_from[1]}T00:00:00Z`;
-        //     this.date_to = `20${date_to[3]}-${date_to[2]}-${date_to[1]}T00:00:00Z`;
-        // } catch (e) {
-        //     this.post.date_from = e.message;
-        //     this.post.date_to = e.message;
-        //     this.type = 'error';
-        // }
     }
 
     getPrice(document) {
         try {
-            const price = document.querySelector('.price .number').textContent;
+            const price = document.querySelector('.price_desktop_spec').textContent;
             this.price = +price.replace(/[\s, \W]/g, '');
         } catch (e) {
             this.post.price = e.message;
@@ -84,13 +81,9 @@ export default class Strannik extends BaseTour {
         }
     }
 
-    getImage(document) {
-        try {
-            this.image = document.querySelector('.block_image img').getAttribute('src');
-        } catch (e) {
-            this.post.image = e.message;
-            this.type = 'error';
-        }
+    downloadCover(document, id) {
+        const imageUrl = document.querySelector('.block_slider img').getAttribute('src');
+        downloadImage(imageUrl, id);
     }
 
     getLink(document) {
@@ -105,7 +98,7 @@ export default class Strannik extends BaseTour {
 
     getDescription(document) {
         try {
-            let description = document.querySelector('.description').textContent.trim();
+            let description = document.querySelector('.comment-text').textContent.trim();
             description = description.replace('/\n/g',' ');
             this.description = description;
         } catch (e) {
@@ -114,11 +107,20 @@ export default class Strannik extends BaseTour {
         }
     }
 
-    // getRegion(document) {
-    //    try {
-    //       this.region = region;
-    //    } catch (e) {
-    //       this.post.region = e.message;
-    //    }
-    // }
+    getRegion(document) {
+       try {
+          this.region = document.querySelector('.white_text.block_link').children[1].querySelector('a').textContent;
+       } catch (e) {
+          this.post.region = e.message;
+       }
+    }
+
+    getDifficulty(document) {
+       try {
+          this.difficulty = +document.querySelector('.tour_params .value').textContent.split('/')[0];
+          console.log(+document.querySelector('.tour_params .value').textContent.split('/')[0])
+       } catch (e) {
+          this.post.difficulty = e.message;
+       }
+    }
 }
