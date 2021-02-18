@@ -9,6 +9,7 @@
         "indent": [
             true
         ],
+        "semicolon": [true, "always"],
         "interface-name": [
             false
         ],

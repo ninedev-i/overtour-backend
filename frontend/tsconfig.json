@@ -10,7 +10,8 @@
         "noImplicitThis": false,
         "noImplicitAny": true,
         "noImplicitReturns": false,
-        "strictNullChecks": false
+        "strictNullChecks": false,
+        "allowSyntheticDefaultImports": true
     },
     "include": [
         "./src/**/*"

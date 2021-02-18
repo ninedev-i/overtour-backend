@@ -29,7 +29,7 @@
 
 <script lang="ts">
     import {Vue, Component, Prop} from 'vue-property-decorator'
-    import * as moment from 'moment';
+    import {dayjs} from '../../util/dayjs';
 
     @Component({
         computed: {
@@ -47,7 +47,7 @@
         }
 
         formatDate(date: Date, format: string): string {
-            return moment(date).format(format);
+            return dayjs(date).format(format);
         }
 
         triads(amount: number) {

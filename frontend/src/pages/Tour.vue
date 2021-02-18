@@ -39,8 +39,8 @@
                <el-button type="primary" icon="el-icon-link" class="tour_link">Пойти в поход</el-button>
             </a>
             <div class="side_block-white">
-               <div><b class="tour_additional_info">Начало:</b> {{moment(date_from).format('D MMMM YYYY')}}</div>
-               <div><b class="tour_additional_info">Конец:</b> {{moment(date_to).format('D MMMM YYYY')}}</div>
+               <div><b class="tour_additional_info">Начало:</b> {{dayjs(date_from).format('D MMMM YYYY')}}</div>
+               <div><b class="tour_additional_info">Конец:</b> {{dayjs(date_to).format('D MMMM YYYY')}}</div>
                <div><b class="tour_additional_info">Стоимость:</b> {{triads(price)}} ₽</div>
             </div>
          </template>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+    import {dayjs} from '~/util/days';
     import menuHeader from '~/components/Elements/Header';
     import page from '~/components/Elements/Page';
 
@@ -98,6 +99,10 @@
             const info = await $axios.get(`get_tour/${params.id}`);
             return await info.data;
         },
+
+        methods: {
+            dayjs: () => dayjs,
+        }
     }
 </script>
 

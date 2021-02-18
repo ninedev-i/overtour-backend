@@ -1,8 +1,5 @@
 import Vue from 'vue';
-import * as moment from 'moment';
-
-Vue.prototype.moment = moment;
-moment.locale('ru');
+import {dayjs} from './dayjs';
 
 // element
 import ElementUI from 'element-ui';
@@ -36,15 +33,15 @@ Vue.prototype.period = (date_from_string: string, date_to_string: string) => {
     let output;
 
     if (date_from_string === date_to_string) {
-        output = moment(date_to).format(`D MMMM ${yearFormat}`);
+        output = dayjs(date_to).format(`D MMMM ${yearFormat}`);
     } else if (date_from.getFullYear() === date_to.getFullYear()) {
         if (date_from.getMonth() === date_to.getMonth()) {
-            output = `${moment(date_from).format('D')}—${moment(date_to).format(`D MMM ${yearFormat}`)}`;
+            output = `${dayjs(date_from).format('D')}—${dayjs(date_to).format(`D MMM ${yearFormat}`)}`;
         } else {
-            output = `${moment(date_from).format('D MMM')}—${moment(date_to).format(`D MMM ${yearFormat}`)}`;
+            output = `${dayjs(date_from).format('D MMM')}—${dayjs(date_to).format(`D MMM ${yearFormat}`)}`;
         }
     } else  {
-        output = `${moment(date_from).format(`D MMM ${yearFormat}`)}—${moment(date_to).format(`D MMM ${yearFormat}`)}`;
+        output = `${dayjs(date_from).format(`D MMM ${yearFormat}`)}—${dayjs(date_to).format(`D MMM ${yearFormat}`)}`;
     }
 
     return output;

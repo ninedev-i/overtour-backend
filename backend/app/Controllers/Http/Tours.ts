@@ -1,6 +1,6 @@
 import Tour from 'App/Models/Tour';
 import Draft from 'App/Models/Draft';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export default class Tours {
     // Список походов по фильтру
@@ -11,14 +11,14 @@ export default class Tours {
             .select('id', 'title', 'date_from', 'date_to', 'duration', 'image', 'description', 'price', 'link', 'difficulty', 'region', 'tags');
 
         if (date_from && date_to) {
-            const filterDate = date_from ? date_from : moment(new Date()).format('YYYY-MM-DD');
+            const filterDate = date_from ? date_from : dayjs(new Date()).format('YYYY-MM-DD');
             tour = tour
                 .where('date_from', '>=', filterDate)
                 .where('date_from', '<=', date_to)
         } else {
             tour = tour
-                .where('date_from', '>=', moment(new Date()).format('YYYY-MM-DD'))
-            console.error(moment(new Date()).format('YYYY-MM-DD'))
+                .where('date_from', '>=', dayjs(new Date()).format('YYYY-MM-DD'))
+            console.error(dayjs(new Date()).format('YYYY-MM-DD'))
         }
 
 

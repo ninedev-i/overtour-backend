@@ -4,10 +4,10 @@
          <el-switch
             class="filterSide-item"
             v-model="view"
-            inactive-text="Список"
+            inactive-text="Плитка"
             inactive-color="yellowgreen"
             active-color="yellowgreen"
-            active-text="Плитка"
+            active-text="Список"
             @change="toggle()"
          />
       </div>

@@ -27,12 +27,12 @@
                <el-table-column
                   label="C"
                   width="140">
-                  <template slot-scope="scope">{{moment(scope.row.date_from).format('D MMMM YYYY')}}</template>
+                  <template slot-scope="scope">{{dayjs(scope.row.date_from).format('D MMMM YYYY')}}</template>
                </el-table-column>
                <el-table-column
                   label="По"
                   width="140">
-                  <template slot-scope="scope">{{moment(scope.row.date_to).format('D MMMM YYYY')}}</template>
+                  <template slot-scope="scope">{{dayjs(scope.row.date_to).format('D MMMM YYYY')}}</template>
                </el-table-column>
                <el-table-column
                   label="Ссылка">
@@ -62,6 +62,7 @@
 <script lang="ts">
     import {Component, Vue} from 'vue-property-decorator';
     import {Button, Notification, Table, TableColumn} from 'element-ui';
+    import {dayjs} from '../util/dayjs';
     import {Axios} from '../util/axios';
 
     interface IDraftData {
@@ -106,6 +107,10 @@
         };
 
         dataLoadingId: number|null|'all' = null;
+
+        dayjs() {
+            return dayjs;
+        }
 
         indexMethod(index: number) {
             return index++;
