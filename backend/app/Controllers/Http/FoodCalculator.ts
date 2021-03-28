@@ -1,41 +1,43 @@
 import Dish from 'App/Models/Dish';
 import Ingredient from 'App/Models/Ingredient';
 import {ModelQueryBuilderContract} from '@ioc:Adonis/Lucid/Model';
-import each from 'async/each';
+// import each from 'async/each';
 
-interface IIngredient {
-    id: number;
-    title: string;
-    count: number;
-}
+// interface IIngredient {
+//     id: number;
+//     title: string;
+//     count: number;
+// }
 
 export default class FoodCalculator {
     // Dishes
     public async dishList(): Promise<Dish[]> {
-        const dishes = await Dish
+        // const dishes = await Dish
+        //     .query()
+        //     .select('id', 'title', 'type', 'ingredients');
+        //
+        // await each(dishes, async (item) => {
+        //     const ingredientsArray = Object.keys(JSON.parse(item.ingredients));
+        //     let ingredients: IIngredient[] = []
+        //     await each(ingredientsArray, async (id) => {
+        //         let ingredient = await Ingredient
+        //             .query()
+        //             .select('id', 'title')
+        //             .where('id', +id)
+        //             .first();
+        //
+        //         const ingredientData = {...ingredient!.toJSON(), ...{count: JSON.parse(item.ingredients)[id]}}
+        //
+        //         ingredients.push(<IIngredient>ingredientData);
+        //     });
+        //
+        //     item.ingredients = ingredients
+        //     return item;
+        // });
+
+        return Dish
             .query()
             .select('id', 'title', 'type', 'ingredients');
-
-        await each(dishes, async (item) => {
-            const ingredientsArray = Object.keys(JSON.parse(item.ingredients));
-            let ingredients: IIngredient[] = []
-            await each(ingredientsArray, async (id) => {
-                let ingredient = await Ingredient
-                    .query()
-                    .select('id', 'title')
-                    .where('id', +id)
-                    .first();
-
-                const ingredientData = {...ingredient!.toJSON(), ...{count: JSON.parse(item.ingredients)[id]}}
-
-                ingredients.push(<IIngredient>ingredientData);
-            });
-
-            item.ingredients = ingredients
-            return item;
-        });
-
-        return dishes;
     }
 
     public addDish({request}): Promise<Dish> {
