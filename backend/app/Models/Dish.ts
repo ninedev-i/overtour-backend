@@ -11,7 +11,9 @@ export default class Dish extends BaseModel {
     @column({})
     public type: number;
 
-    @column({})
+    @column({
+        serialize: (value) => JSON.parse(value),
+    })
     public ingredients: object[];
 
     @column.dateTime({autoCreate: true})
