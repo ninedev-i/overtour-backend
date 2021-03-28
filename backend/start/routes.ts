@@ -9,5 +9,9 @@ Route.get('api/get_all_drafts', 'Tours.getAllDrafts');
 Route.post('api/crawler/get_club_tours', 'Crawler.getClubTours');
 Route.post('api/crawler/get_tour_detail', 'Crawler.getTourDetails');
 
-Route.get('api/dishes', 'Dishes.getAll')
-Route.post('api/dishes', 'Dishes.add')
+Route.get('api/dish', 'FoodCalculator.dishList');
+Route.post('api/dish', 'FoodCalculator.addDish');
+Route.put('api/dish/:id', 'FoodCalculator.editDish');
+Route.get('api/ingredient', 'FoodCalculator.ingredientsList');
+Route.post('api/ingredient', 'FoodCalculator.addIngredient');
+Route.put('api/ingredient/:id', 'FoodCalculator.editIngredient');

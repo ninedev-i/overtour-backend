@@ -1,5 +1,6 @@
 import Dish from 'App/Models/Dish';
 import Ingredient from 'App/Models/Ingredient';
+import {ModelQueryBuilderContract} from '@ioc:Adonis/Lucid/Model';
 import each from 'async/each';
 
 interface IIngredient {
@@ -8,8 +9,9 @@ interface IIngredient {
     count: number;
 }
 
-export default class Dishes {
-    public async getAll(): Promise<Dish[]> {
+export default class FoodCalculator {
+    // Dishes
+    public async dishList(): Promise<Dish[]> {
         const dishes = await Dish
             .query()
             .select('id', 'title', 'type', 'ingredients');
@@ -36,7 +38,30 @@ export default class Dishes {
         return dishes;
     }
 
-    public add({request}): Promise<Dish> {
+    public addDish({request}): Promise<Dish> {
         return Dish.create(request.all());
+    }
+
+    public editDish({request, params}): ModelQueryBuilderContract<typeof Dish, number> {
+        return Dish
+            .query()
+            .where('id', params.id)
+            .update(request.all());
+    }
+
+    // Ingredients
+    public async ingredientsList(): Promise<Ingredient[]> {
+        return Ingredient.query().select('id', 'title', 'type');
+    }
+
+    public addIngredient({request}): Promise<Ingredient> {
+        return Ingredient.create(request.all());
+    }
+
+    public editIngredient({request, params}): ModelQueryBuilderContract<typeof Ingredient, number> {
+        return Ingredient
+            .query()
+            .where('id', params.id)
+            .update(request.all());
     }
 }
