@@ -53,17 +53,19 @@ export default class FoodCalculator {
 
     // Ingredients
     public async ingredientsList(): Promise<Ingredient[]> {
-        return Ingredient.query().select('id', 'title', 'type');
+        return Ingredient.query().select('id', 'title', 'type', 'count_caption');
     }
 
     public addIngredient({request}): Promise<Ingredient> {
         return Ingredient.create(request.all());
     }
 
-    public editIngredient({request, params}): ModelQueryBuilderContract<typeof Ingredient, number> {
-        return Ingredient
+    public async editIngredient({request, params}):  Promise<Ingredient[]> {
+        await Ingredient
             .query()
             .where('id', params.id)
             .update(request.all());
+
+        return this.ingredientsList();
     }
 }
