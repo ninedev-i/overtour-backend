@@ -56,8 +56,9 @@ export default class FoodCalculator {
         return Ingredient.query().select('id', 'title', 'type', 'count_caption');
     }
 
-    public addIngredient({request}): Promise<Ingredient> {
-        return Ingredient.create(request.all());
+    public async addIngredient({request}): Promise<Ingredient[]> {
+        await Ingredient.create(request.all());
+        return this.ingredientsList();
     }
 
     public async editIngredient({request, params}):  Promise<Ingredient[]> {
