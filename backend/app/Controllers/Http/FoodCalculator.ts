@@ -60,10 +60,12 @@ export default class FoodCalculator {
         return Ingredient.create(request.all());
     }
 
-    public editIngredient({request, params}): ModelQueryBuilderContract<typeof Ingredient, number> {
-        return Ingredient
+    public async editIngredient({request, params}):  Promise<Ingredient[]> {
+        await Ingredient
             .query()
             .where('id', params.id)
             .update(request.all());
+
+        return this.ingredientsList();
     }
 }
