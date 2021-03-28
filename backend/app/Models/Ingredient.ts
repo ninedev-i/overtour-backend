@@ -12,7 +12,7 @@ export default class Ingredient extends BaseModel {
     public type: number;
 
     @column({})
-    public countCaption: string;
+    public count_caption: string;
 
     @column.dateTime({autoCreate: true})
     public created_at: DateTime;
