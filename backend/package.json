@@ -4,7 +4,7 @@
   "private": true,
   "author": "Victor Vedenin",
   "scripts": {
-    "dev": "node ace serve --watch",
+    "backend:dev": "node ace serve --watch",
     "build": "node ace build --production"
   },
   "devDependencies": {
@@ -17,7 +17,7 @@
     "youch-terminal": "^1.0.1"
   },
   "dependencies": {
-    "@adonisjs/ace": "^6.9.3",
+    "@adonisjs/ace": "^7.1.6",
     "@adonisjs/core": "^5.0.4-preview-rc",
     "@adonisjs/fold": "^6.3.5",
     "@adonisjs/lucid": "^8.0.5",
