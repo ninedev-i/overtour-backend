@@ -6,7 +6,6 @@
  */
 
 import Env from '@ioc:Adonis/Core/Env'
-import Application from '@ioc:Adonis/Core/Application'
 import { OrmConfig } from '@ioc:Adonis/Lucid/Orm'
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
 
@@ -21,36 +20,15 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   | file.
   |
   */
-  connection: Env.get('DB_CONNECTION', 'sqlite') as string,
+  connection: Env.get('DB_CONNECTION'),
 
   connections: {
     /*
     |--------------------------------------------------------------------------
-    | Sqlite
+    | MySQL config
     |--------------------------------------------------------------------------
     |
-    | Configuration for the Sqlite database.  Make sure to install the driver
-    | from npm when using this connection
-    |
-    | npm i sqlite3
-    |
-    */
-    sqlite: {
-      client: 'sqlite',
-      connection: {
-        filename: Application.tmpPath('db.sqlite3'),
-      },
-      useNullAsDefault: true,
-      healthCheck: false,
-      debug: Env.get('LOG_LEVEL') === 'trace',
-    },
-
-    /*
-    |--------------------------------------------------------------------------
-    | Mysql config
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for Mysql database. Make sure to install the driver
+    | Configuration for MySQL database. Make sure to install the driver
     | from npm when using this connection
     |
     | npm i mysql
@@ -59,44 +37,21 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
     mysql: {
       client: 'mysql',
       connection: {
-        host: Env.get('DB_HOST', '127.0.0.1') as string,
-        port: Number(Env.get('DB_PORT', 3306)),
-        user: Env.get('DB_USER', 'lucid') as string,
-        password: Env.get('DB_PASSWORD', 'lucid') as string,
-        database: Env.get('DB_NAME', 'lucid') as string,
+        host: Env.get('MYSQL_HOST'),
+        port: Env.get('MYSQL_PORT'),
+        user: Env.get('MYSQL_USER'),
+        password: Env.get('MYSQL_PASSWORD', ''),
+        database: Env.get('MYSQL_DB_NAME'),
       },
       healthCheck: false,
-      debug: Env.get('LOG_LEVEL') === 'trace',
+			debug: false,
     },
 
-    /*
-    |--------------------------------------------------------------------------
-    | PostgreSQL config
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for PostgreSQL database. Make sure to install the driver
-    | from npm when using this connection
-    |
-    | npm i pg
-    |
-    */
-    pg: {
-      client: 'pg',
-      connection: {
-        host: Env.get('DB_HOST', '127.0.0.1') as string,
-        port: Number(Env.get('DB_PORT', 5432)),
-        user: Env.get('DB_USER', 'lucid') as string,
-        password: Env.get('DB_PASSWORD', 'lucid') as string,
-        database: Env.get('DB_NAME', 'lucid') as string,
-      },
-      healthCheck: false,
-      debug: Env.get('LOG_LEVEL') === 'trace',
-    },
   },
 
   /*
   |--------------------------------------------------------------------------
-  | Orm Configuration
+  | ORM Configuration
   |--------------------------------------------------------------------------
   |
   | Following are some of the configuration options to tweak the conventional
