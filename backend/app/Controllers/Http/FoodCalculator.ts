@@ -37,11 +37,13 @@ export default class FoodCalculator {
 
         return Dish
             .query()
-            .select('id', 'title', 'type', 'ingredients');
+            .select('id', 'title', 'type', 'ingredients')
+            .orderBy('title');
     }
 
-    public addDish({request}): Promise<Dish> {
-        return Dish.create(request.all());
+    public async addDish({request}): Promise<Dish[]> {
+        await Dish.create(request.all());
+        return this.dishList();
     }
 
     public editDish({request, params}): ModelQueryBuilderContract<typeof Dish, number> {
@@ -53,7 +55,10 @@ export default class FoodCalculator {
 
     // Ingredients
     public async ingredientsList(): Promise<Ingredient[]> {
-        return Ingredient.query().select('id', 'title', 'type', 'count_caption');
+        return Ingredient
+            .query()
+            .select('id', 'title', 'type', 'count_caption')
+            .orderBy('title');
     }
 
     public async addIngredient({request}): Promise<Ingredient[]> {
