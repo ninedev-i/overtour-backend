@@ -16,6 +16,9 @@ export default class Dish extends BaseModel {
     })
     public ingredients: object[];
 
+    @column({})
+    public user_id: number;
+
     @column.dateTime({autoCreate: true})
     public created_at: DateTime;
 

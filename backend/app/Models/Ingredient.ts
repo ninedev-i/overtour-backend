@@ -14,6 +14,9 @@ export default class Ingredient extends BaseModel {
     @column({})
     public count_caption: string;
 
+    @column({})
+    public user_id: number;
+
     @column.dateTime({autoCreate: true})
     public created_at: DateTime;
 
