@@ -17,10 +17,13 @@ Route.group(()=>{
 }).middleware('auth');
 
 Route.get('api/dish', 'FoodCalculator.dishList');
+Route.get('api/menu', 'FoodCalculator.menuList');
 Route.get('api/ingredient', 'FoodCalculator.ingredientsList');
 Route.group(()=>{
     Route.post('api/dish', 'FoodCalculator.addDish');
     Route.put('api/dish/:id', 'FoodCalculator.editDish');
     Route.post('api/ingredient', 'FoodCalculator.addIngredient');
     Route.put('api/ingredient/:id', 'FoodCalculator.editIngredient');
+    Route.post('api/menu', 'FoodCalculator.addMenu');
+    Route.put('api/menu/:id', 'FoodCalculator.updateMenu');
 }).middleware('auth');
