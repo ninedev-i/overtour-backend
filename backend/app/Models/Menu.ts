@@ -21,9 +21,14 @@ export default class Menu extends BaseModel {
     })
     public settings: object;
 
+    @column({
+        serialize: (value) => !!value,
+    })
+    public is_current: boolean;
+
     @column.dateTime({autoCreate: true})
     public created_at: DateTime;
 
-    @column.dateTime({autoCreate: true, autoUpdate: true})
+    @column.dateTime({autoCreate: true, autoUpdate: false})
     public updated_at: DateTime;
 }

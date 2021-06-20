@@ -69,7 +69,7 @@ export default class FoodCalculator {
             const userId = auth.user!.id;
 
             return Menu.query()
-                .select('id', 'title', 'content', 'settings', 'updated_at')
+                .select('id', 'title', 'content', 'settings', 'is_current', 'updated_at')
                 .where('user_id', userId)
                 .orderBy('title');
         } catch {
@@ -86,10 +86,29 @@ export default class FoodCalculator {
 
     public async updateMenu(context: HttpContextContract):  Promise<Menu[]> {
         const {params, request} = context;
+        const updatedData = request.all();
+        updatedData.updated_at = new Date();
         await Menu
             .query()
             .where('id', params.id)
             .update(request.all());
+
+        return this.menuList(context);
+    }
+
+    public async chooseMenu(context: HttpContextContract):  Promise<Menu[]> {
+        const {params, auth} = context;
+
+        await Menu
+            .query()
+            .where('user_id', auth.user!.id)
+            .update({
+                'is_current': 0
+            });
+
+        const currentMenu = await Menu.find(params.id);
+        currentMenu!.is_current = true;
+        await currentMenu!.save();
 
         return this.menuList(context);
     }
