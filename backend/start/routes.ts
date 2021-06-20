@@ -26,4 +26,5 @@ Route.group(()=>{
     Route.put('api/ingredient/:id', 'FoodCalculator.editIngredient');
     Route.post('api/menu', 'FoodCalculator.addMenu');
     Route.put('api/menu/:id', 'FoodCalculator.updateMenu');
+    Route.delete('api/menu/:id', 'FoodCalculator.deleteMenu');
 }).middleware('auth');

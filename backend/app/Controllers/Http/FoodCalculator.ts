@@ -94,4 +94,14 @@ export default class FoodCalculator {
         return this.menuList(context);
     }
 
+    public async deleteMenu(context: HttpContextContract):  Promise<Menu[]> {
+        const {params} = context;
+        const menu = await Menu.find(params.id)
+        if (menu) {
+            await menu.delete();
+        }
+
+        return this.menuList(context);
+    }
+
 }
