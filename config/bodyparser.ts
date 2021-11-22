@@ -7,6 +7,7 @@
 
 import { BodyParserConfig } from '@ioc:Adonis/Core/BodyParser'
 
+// @ts-ignore
 const bodyParserConfig: BodyParserConfig = {
   /*
   |--------------------------------------------------------------------------
