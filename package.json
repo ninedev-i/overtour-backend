@@ -4,8 +4,8 @@
   "private": true,
   "author": "Victor Vedenin",
   "scripts": {
-    "backend:dev": "node ace serve --watch",
-    "backend:build": "node ace build --production"
+    "dev": "node ace serve --watch",
+    "build": "node ace build --production"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^3.0.0",

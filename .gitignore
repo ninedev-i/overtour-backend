@@ -1,4 +1,12 @@
+node_modules
+build
+coverage
+.vscode
+.editorconfig
 .idea
-runner.ts
-package.json
-yarn.lock
+.DS_STORE
+.env
+tmp
+public
+yarn-error.log
+package-lock.json
