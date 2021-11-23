@@ -1,8 +1,8 @@
-import {parseClubStrannik, parseDetailsStrannik} from 'App/Controllers/Http/Tours/Strannik';
-import {parseClubVpohod} from 'App/Controllers/Http/Tours/Vpohod';
-import {parseClubPerehod} from 'App/Controllers/Http/Tours/Perehod';
-import {parseClubPik} from 'App/Controllers/Http/Tours/Pik';
-import {parseClubMyway} from 'App/Controllers/Http/Tours/Myway';
+import { parseClubStrannik, parseDetailsStrannik } from 'App/Controllers/Http/Tours/Strannik';
+import { parseClubVpohod } from 'App/Controllers/Http/Tours/Vpohod';
+import { parseClubPerehod } from 'App/Controllers/Http/Tours/Perehod';
+import { parseClubPik } from 'App/Controllers/Http/Tours/Pik';
+import { parseClubMyway } from 'App/Controllers/Http/Tours/Myway';
 
 export const clubs = {
    1: {
@@ -98,5 +98,5 @@ export const clubs = {
       parse: parseClubMyway,
       // TODO
       getDetails: parseDetailsStrannik,
-   }
+   },
 };

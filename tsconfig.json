@@ -11,6 +11,7 @@
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,
+    "strictNullChecks": false,
     "paths": {
       "App/*": [
         "./app/*"
@@ -29,7 +30,6 @@
       "@adonisjs/core",
       "@adonisjs/repl",
       "@adonisjs/session",
-      "@adonisjs/view",
       "@adonisjs/auth",
       "@adonisjs/lucid"
     ],
