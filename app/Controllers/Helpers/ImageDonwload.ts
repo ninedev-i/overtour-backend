@@ -22,13 +22,13 @@ export function downloadImage(url: string, id: number) {
         });
     }
 
-    saveImage(imageUrl, folder);
+    return saveImage(imageUrl, folder);
 }
 
 function saveImage(url: string, folder: string) {
-    Jimp.read(url)
+    return Jimp.read(url)
         .then((image) => {
-            image
+            return image
                 .cover(240, 160)
                 .write(`${folder}cover.jpg`);
         })

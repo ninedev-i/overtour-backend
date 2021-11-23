@@ -83,7 +83,7 @@ export default class Strannik extends BaseTour {
 
     downloadCover(document, id) {
         const imageUrl = document.querySelector('.block_slider img').getAttribute('src');
-        downloadImage(imageUrl, id);
+        return downloadImage(imageUrl, id);
     }
 
     getLink(document) {

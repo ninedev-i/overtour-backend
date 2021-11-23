@@ -1,3 +1,4 @@
+import Env from '@ioc:Adonis/Core/Env';
 import {BaseModel, column} from '@ioc:Adonis/Lucid/Orm';
 import {DateTime} from 'luxon';
 
@@ -20,7 +21,9 @@ export default class Tour extends BaseModel {
     @column({})
     public link: string;
 
-    @column({})
+    @column({
+        serialize: (value) => `${Env.get('APP_URL')}/images/${value}`
+    })
     public image: string;
 
     @column({})

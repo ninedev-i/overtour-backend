@@ -1,6 +1,6 @@
 import {JSDOM} from 'jsdom';
-import * as request from 'request-promise';
 import each from 'async/each';
+import got from 'got';
 import {DateTime} from 'luxon';
 import Draft from 'App/Models/Draft';
 import Tour from 'App/Models/Tour';
@@ -97,7 +97,7 @@ export default class Crawler {
             selector: '.alltravels .d-none .row .tour-line',
             links: [
                 'https://mwtravel.ru/travel-all/',
-           ]
+            ]
         }
     };
     public tours: object[] = [];
@@ -111,14 +111,11 @@ export default class Crawler {
     /**
      * Спарсим url, вернем dom, или набор данных
      */
-    protected async getDataFromUrl(url: string, selector: string = 'body', isMultiple: boolean = false, isApi: boolean = false) {
-        const website = await request.get(url);
-        if (isApi) {
-            return JSON.parse(website);
-        } else {
-            const document = new JSDOM(website).window.document;
-            return isMultiple ? Array.from(document.querySelectorAll(selector)) : document.querySelector(selector);
-        }
+    protected async getDataFromUrl(url: string, selector: string = 'body', isMultiple: boolean = false) {
+        const response = await got(url);
+        const document = new JSDOM(response.body).window.document;
+
+        return isMultiple ? Array.from(document.querySelectorAll(selector)) : document.querySelector(selector);
     }
 
     protected parseClub(clubId: number, data: Element[]): BaseTour[] {
@@ -144,7 +141,7 @@ export default class Crawler {
         let {club} = request.all();
         club = this.clubs[club];
         for (let url of club.links) {
-            await this.parseTourDrafts(url, club.id, club.selector, club.isApi);
+            await this.parseTourDrafts(url, club.id, club.selector);
         }
 
         return {
@@ -158,10 +155,9 @@ export default class Crawler {
      * @param {string} url – страница, с которой парсятся данные
      * @param {string} clubId – id турклуба
      * @param {string} blockSelector – селектор блоков похода
-     * @param {boolean} isApi – является ли ссылка методом рест апи
      */
-    async parseTourDrafts(url: string, clubId: number, blockSelector: string, isApi: boolean = false) {
-        const allNodes = await this.getDataFromUrl(url, blockSelector, true, isApi);
+    async parseTourDrafts(url: string, clubId: number, blockSelector: string) {
+        const allNodes = await this.getDataFromUrl(url, blockSelector, true);
 
         const tours = this.parseClub(clubId, allNodes);
 
@@ -170,10 +166,10 @@ export default class Crawler {
             this.report.broken += +tour.hasErrors();
 
             const equalDraft = await Draft.query()
-                .where('title', tour.title)
-                .where('date_from', '=', DateTime.fromISO(tour.date_from).toSQLDate())
-                .where('date_to', '=', DateTime.fromISO(tour.date_to).toSQLDate())
-                .first();
+               .where('title', tour.title)
+               .where('date_from', '=', DateTime.fromISO(tour.date_from).toSQLDate())
+               .where('date_to', '=', DateTime.fromISO(tour.date_to).toSQLDate())
+               .first();
 
             if (!equalDraft?.id) {
                 this.report.unique++;
@@ -208,7 +204,14 @@ export default class Crawler {
 
         // @ts-ignore
         await Tour.create(fullTourData.getAllFields())
-            .then(({id}) => fullTourData.downloadCover(node, id));
+           .then((res) => {
+               fullTourData.downloadCover(node, res.id)
+               return res;
+           })
+           .then(res => {
+               res.image = `${res.id}/cover.jpg`;
+               res.save();
+           });
         const draft = await Draft.findOrFail(draftId);
         draft.type = 'added';
 

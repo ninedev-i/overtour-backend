@@ -58,6 +58,6 @@ export default class Tours {
     }
 
     public async getAllDrafts() {
-        return await Draft.query();
+        return await Draft.query().orderBy('date_from', 'desc');
     }
 }
