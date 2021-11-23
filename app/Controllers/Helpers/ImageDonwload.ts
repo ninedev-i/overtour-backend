@@ -29,7 +29,7 @@ function saveImage(url: string, folder: string) {
     return Jimp.read(url)
         .then((image) => {
             return image
-                .cover(240, 160)
+                .cover(320, 160)
                 .write(`${folder}cover.jpg`);
         })
         .catch((err) => {

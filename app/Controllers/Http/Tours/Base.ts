@@ -41,7 +41,7 @@ export default class BaseTour {
             date_to: DateTime.fromISO(this.date_to),
             link: this.link,
             club: this.club,
-            duration: 1,
+            duration: Math.floor(( Date.parse(this.date_to) - Date.parse(this.date_from) ) / 86400000) + 1,
             image: this.image,
             description: this.description,
             price: this.price,

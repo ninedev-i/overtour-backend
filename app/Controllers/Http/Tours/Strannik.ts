@@ -43,9 +43,9 @@ export default class Strannik extends BaseTour {
                 this[field] = initData[field];
             }
             this.getPrice(document);
-            // this.getImage(document);
             this.getDescription(document);
             this.getRegion(document);
+            this.getDifficulty(document);
         } else {
             this.club = 1;
             const {date_from, date_to} = initData;
@@ -53,7 +53,6 @@ export default class Strannik extends BaseTour {
             this.getTitle(document);
             this.getDate([date_from, date_to]);
             this.getLink(document);
-            this.getDifficulty(document);
         }
     }
 
@@ -118,7 +117,6 @@ export default class Strannik extends BaseTour {
     getDifficulty(document) {
        try {
           this.difficulty = +document.querySelector('.tour_params .value').textContent.split('/')[0];
-          console.log(+document.querySelector('.tour_params .value').textContent.split('/')[0])
        } catch (e) {
           this.post.difficulty = e.message;
        }
