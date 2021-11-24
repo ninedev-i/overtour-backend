@@ -128,7 +128,7 @@ export default class Crawler {
       const drafts = await Draft.query()
          .where('club', clubId)
          .where('type', 'draft')
-         .orderBy('date_from', 'desc')
+         .orderBy('date_from', 'asc')
          .limit(40);
 
       return drafts.forEach(draft => {

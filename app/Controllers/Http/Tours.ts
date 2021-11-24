@@ -7,7 +7,7 @@ import { LucidRow } from '@ioc:Adonis/Lucid/Model';
 export default class Tours {
    // Список походов по фильтру
    public getTours({ request }: HttpContextContract) {
-      const { region, date_from, date_to, tags, price, duration } = request.all();
+      const { region, date_from, date_to, tags, price, duration, page } = request.all();
 
       let tour = Tour
          .query()
@@ -49,7 +49,7 @@ export default class Tours {
 
       return tour
          .orderBy('date_from')
-         .limit(40);
+         .paginate(page ?? 1, 40);
    }
 
    // Данные о походе
