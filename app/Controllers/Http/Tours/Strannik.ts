@@ -58,7 +58,7 @@ export default class Strannik extends BaseTour {
 
    public getTitle(document: Element): void {
       try {
-         this.title = document.querySelector('.block_image span').textContent;
+         this.title = document.querySelector('.block_image .text').textContent.trim();
       } catch (e) {
          this.post.title = e.message;
          this.type = 'error';
