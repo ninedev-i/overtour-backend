@@ -32,10 +32,6 @@ export default class Crawler {
       return isMultiple ? Array.from(document.querySelectorAll(selector)) : document.querySelector(selector);
    }
 
-   protected parseClub(clubId: number, data: Node[]): BaseTour[] {
-      return clubs[clubId].parse(data);
-   }
-
    /**
      * Запрос на парсинг турклуба
      */
@@ -61,7 +57,7 @@ export default class Crawler {
    public async parseTourDrafts(url: string, clubId: number, blockSelector: string): Promise<void> {
       const allNodes = await this.getDataFromUrl<Element[]>(url, blockSelector, true);
 
-      const tours = this.parseClub(clubId, allNodes);
+      const tours = clubs[clubId].parse(allNodes);
 
       await each(tours, async function(tour: BaseTour) {
          this.report.found++;

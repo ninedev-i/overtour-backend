@@ -2,8 +2,8 @@ import { DateTime } from 'luxon';
 
 interface IBaseTourProps {
    title: string;
-   date_from: DateTime;
-   date_to: DateTime;
+   date_from: string;
+   date_to: string;
    duration: number;
    image: string;
    description: string;
@@ -17,11 +17,16 @@ interface IBaseTourProps {
    post: any;
 }
 
-export default class BaseTour {
+type TourLucidModel = Omit<IBaseTourProps, 'id' | 'type' | 'post' | 'date_from' | 'date_to'> & {
+   date_from: DateTime;
+   date_to: DateTime;
+}
+
+export default class BaseTour implements IBaseTourProps {
    public id: number
    public title: string = ''
-   public date_from: string = ''
-   public date_to: string = ''
+   public date_from: string
+   public date_to: string
    public duration: number = 0
    public image: string = ''
    public description: string = ''
@@ -35,7 +40,7 @@ export default class BaseTour {
    // для описания ошибок добавления
    public post: any = {}
 
-   public getAllFields(): Omit<IBaseTourProps, 'id' | 'type' | 'post'> {
+   public getAllFields(): TourLucidModel {
       return {
          title: this.title,
          date_from: DateTime.fromISO(this.date_from),
