@@ -7,7 +7,8 @@ import { LucidRow } from '@ioc:Adonis/Lucid/Model';
 export default class Tours {
    // Список походов по фильтру
    public getTours({ request }: HttpContextContract) {
-      const { region, date_from, date_to, tags } = request.all();
+      const { region, date_from, date_to, tags, price, duration } = request.all();
+
       let tour = Tour
          .query()
          .select('id', 'title', 'date_from', 'date_to', 'duration', 'image', 'description', 'price', 'link',
@@ -30,6 +31,20 @@ export default class Tours {
 
       if (tags) {
          tour = tour.where('tags', 'like', `%${tags}%`)
+      }
+
+      if (price) {
+         const [priceFrom, priceTo] = JSON.parse(price);
+         tour = tour
+            .where('price', '>=', priceFrom)
+            .where('price', '<=', priceTo)
+      }
+
+      if (duration) {
+         const [durationFrom, durationTo] = JSON.parse(duration);
+         tour = tour
+            .where('duration', '>=', durationFrom)
+            .where('duration', '<=', durationTo)
       }
 
       return tour
