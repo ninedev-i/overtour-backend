@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { ModelObject } from '@ioc:Adonis/Lucid/Model';
 import { JSDOM } from 'jsdom';
 import each from 'async/each';
 import got from 'got';
@@ -72,7 +73,7 @@ export default class Crawler {
          if (!equalDraft?.id) {
             this.report.unique++;
             try {
-               const draft = await Draft.create(tour.getAllFields());
+               const draft = await Draft.create(tour.getDraftFields());
                tour.id = draft.id;
             } catch (e) {
                this.report.broken++;
@@ -87,7 +88,10 @@ export default class Crawler {
 
    public async getTourDetails({ request }: HttpContextContract): Promise<Draft> {
       const { tourInfo } = request.all();
+      return this.parseDetailed(tourInfo);
+   }
 
+   public async parseDetailed(tourInfo: ModelObject): Promise<Draft> {
       const draftId = tourInfo.id;
       delete tourInfo.id;
 
@@ -113,5 +117,22 @@ export default class Crawler {
       await draft.save()
 
       return draft;
+   }
+
+   /*
+    * Парсим детально набор походов
+    */
+   public async getDetailsByClub({ request }: HttpContextContract): Promise<void> {
+      const { clubId } = request.all();
+
+      const drafts = await Draft.query()
+         .where('club', clubId)
+         .where('type', 'draft')
+         .orderBy('date_from', 'desc')
+         .limit(40);
+
+      return drafts.forEach(draft => {
+         this.parseDetailed(draft.toJSON());
+      });
    }
 }

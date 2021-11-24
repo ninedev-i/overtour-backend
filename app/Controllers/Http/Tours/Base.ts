@@ -17,12 +17,18 @@ interface IBaseTourProps {
    post: any;
 }
 
-interface TourDraft {
+export interface TourDraft {
+   id?: number;
    title: string;
    date_from: DateTime;
    date_to: DateTime;
    club: number;
    link: string;
+}
+
+type TourLucidModel = Omit<IBaseTourProps, 'id' | 'type' | 'post' | 'date_from' | 'date_to'> & {
+   date_from: DateTime;
+   date_to: DateTime;
 }
 
 export default class BaseTour implements IBaseTourProps {
@@ -43,13 +49,30 @@ export default class BaseTour implements IBaseTourProps {
    // для описания ошибок добавления
    public post: any = {}
 
-   public getAllFields(): TourDraft {
+   public getDraftFields(): TourDraft {
       return {
          title: this.title,
          date_from: DateTime.fromISO(this.date_from),
          date_to: DateTime.fromISO(this.date_to),
          club: this.club,
          link: this.link,
+      }
+   }
+
+   public getAllFields(): TourLucidModel {
+      return {
+         title: this.title,
+         date_from: DateTime.fromISO(this.date_from),
+         date_to: DateTime.fromISO(this.date_to),
+         duration: Math.floor((Date.parse(this.date_to) - Date.parse(this.date_from)) / 86400000) + 1,
+         image: this.image,
+         description: this.description,
+         price: this.price,
+         difficulty: this.difficulty,
+         region: this.region,
+         tags: Array.isArray(this.tags) ? this.tags.join(): this.tags,
+         link: this.link,
+         club: this.club,
       }
    }
 

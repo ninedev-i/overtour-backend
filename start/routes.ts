@@ -14,6 +14,7 @@ Route.get('api/drafts', 'Tours.getAllDrafts');
 Route.group(()=>{
    Route.post('api/crawler/club_tours', 'Crawler.getClubTours');
    Route.post('api/crawler/tour_detail', 'Crawler.getTourDetails');
+   Route.post('api/crawler/parse_details_by_club', 'Crawler.getDetailsByClub');
 })/*.middleware('auth')*/;
 
 Route.get('api/dish', 'FoodCalculator.dishList');

@@ -1,38 +1,40 @@
+import { mkdirSync, existsSync } from 'fs';
 import Jimp from 'jimp';
-import {writeFile, mkdirSync, existsSync} from 'fs';
 
-export function downloadImage(url: string, id: number) {
-    const folder = `./public/images/${id}/`;
-    let imageUrl = url;
+type ImageType = 'cover' | 'attachment';
 
-    if (!existsSync(folder)){
-        mkdirSync(folder);
-    }
+const resolutions = {
+   cover: {
+      width: 320,
+      height: 160,
+   },
+};
 
-    if (Array.isArray(url.match('data:image'))) {
-        imageUrl = folder + 'cover.jpg';
-        const base64Data = url.replace(/^data:image\/jpg;base64,/, '')
-        const binaryData = Buffer.from(base64Data, 'base64').toString('binary');
+export async function downloadImage(url: string, id: number) {
+   const folder = `./public/images/${id}/`;
+   let imageUrl: string | Buffer = url;
 
-        writeFile(imageUrl, binaryData, 'binary', (err) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
-    }
+   if (!existsSync(folder)) {
+      await mkdirSync(folder);
+   }
 
-    return saveImage(imageUrl, folder);
+   if (Array.isArray(url.match('data:image'))) {
+      const base64Data = url.replace(/^data:image\/jpg;base64,/, '')
+      imageUrl = Buffer.from(base64Data, 'base64');
+   }
+
+   return saveImage(imageUrl, folder, 'cover', 'cover');
 }
 
-function saveImage(url: string, folder: string) {
-    return Jimp.read(url)
-        .then((image) => {
-            return image
-                .cover(320, 160)
-                .write(`${folder}cover.jpg`);
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+function saveImage(url: any, folder: string, type: ImageType, name: string) {
+   return Jimp.read(url)
+      .then((image) => {
+         return image
+            .cover(resolutions[type].width, resolutions[type].height)
+            .quality(80)
+            .write(`${folder}${name}.jpg`);
+      })
+      .catch((err) => {
+         console.error(err);
+      });
 }
