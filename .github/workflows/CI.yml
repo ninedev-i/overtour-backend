@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Run install on server
-        uses: D3rHase/ssh-command-action@{version}
+        uses: D3rHase/ssh-command-action@v0.2.1
         with:
           HOST: ${{ secrets.REMOTE_HOST }}
           USER: ${{ secrets.REMOTE_USER }}
