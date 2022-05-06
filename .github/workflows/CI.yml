@@ -16,9 +16,9 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Run install on server
-        uses: D3rHase/ssh-command-action@v0.2.1
+        uses: fifsky/ssh-action@master
         with:
-          HOST: ${{ secrets.REMOTE_HOST }}
-          USER: ${{ secrets.REMOTE_USER }}
-          PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
-          COMMAND: ${{ secrets.COMMAND }}
+          command: ${{ secrets.COMMAND }}
+          host: ${{ secrets.REMOTE_HOST }}
+          user: ${{ secrets.REMOTE_USER }}
+          pass: ${{ secrets.REMOTE_PASSWORD }}
