@@ -1,8 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Tour from 'App/Models/Tour';
 import Draft from 'App/Models/Draft';
-import dayjs from 'dayjs';
-import { LucidRow } from '@ioc:Adonis/Lucid/Model';
+import { DateTime } from 'luxon';
+import { LucidRow } from '@ioc:Adonis/Lucid/Orm';
 
 export default class Tours {
    // Список походов по фильтру
@@ -15,14 +15,13 @@ export default class Tours {
             'difficulty', 'region', 'tags');
 
       if (date_from && date_to) {
-         const filterDate = date_from ? date_from : dayjs(new Date()).format('YYYY-MM-DD');
+         const filterDate = date_from ? date_from : DateTime.fromJSDate(new Date()).toSQLDate();
          tour = tour
             .where('date_from', '>=', filterDate)
             .where('date_from', '<=', date_to)
       } else {
          tour = tour
-            .where('date_from', '>=', dayjs(new Date()).format('YYYY-MM-DD'))
-         console.error(dayjs(new Date()).format('YYYY-MM-DD'))
+            .where('date_from', '>=', DateTime.fromJSDate(new Date()).toSQLDate())
       }
 
       if (region) {

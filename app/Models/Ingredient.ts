@@ -1,4 +1,4 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm';
 import { DateTime } from 'luxon';
 
 export default class Ingredient extends BaseModel {
@@ -16,6 +16,11 @@ export default class Ingredient extends BaseModel {
 
    @column({})
    public user_id: number;
+
+   @computed()
+   public get is_default() {
+      return this.user_id === 1;
+   }
 
    @column.dateTime({ autoCreate: true })
    public created_at: DateTime;

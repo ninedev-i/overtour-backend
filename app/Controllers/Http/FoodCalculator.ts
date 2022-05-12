@@ -1,7 +1,7 @@
 import Dish from 'App/Models/Dish';
 import Menu from 'App/Models/Menu';
 import Ingredient from 'App/Models/Ingredient';
-import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Model';
+import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm';
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { AuthContract } from '@ioc:Adonis/Addons/Auth';
 
@@ -11,7 +11,7 @@ export default class FoodCalculator {
       const userIdArray = await this._getUserArray(auth);
       return Dish
          .query()
-         .select('id', 'title', 'type', 'ingredients')
+         .select('id', 'title', 'type', 'ingredients', 'user_id')
          .whereIn('user_id', userIdArray)
          .orderBy('title');
    }
@@ -30,11 +30,23 @@ export default class FoodCalculator {
          .update(request.all());
    }
 
+   public async deleteDish(context: HttpContextContract): Promise<Dish[]> {
+      const { auth, params } = context;
+
+      await Dish
+         .query()
+         .where('id', params.id)
+         .where('user_id', auth.user!.id)
+         .delete();
+
+      return this.dishList(context);
+   }
+
    // Ingredients
    public async ingredientsList({ auth }: HttpContextContract): Promise<Ingredient[]> {
       const userIdArray = await this._getUserArray(auth);
       return Ingredient.query()
-         .select('id', 'title', 'type', 'count_caption')
+         .select('id', 'title', 'type', 'user_id')
          .whereIn('user_id', userIdArray)
          .orderBy('title');
    }
@@ -47,11 +59,23 @@ export default class FoodCalculator {
    }
 
    public async editIngredient(context: HttpContextContract): Promise<Ingredient[]> {
-      const { params, request } = context;
+      const { auth, params, request } = context;
       await Ingredient
          .query()
          .where('id', params.id)
+         .where('user_id', auth.user!.id)
          .update(request.all());
+
+      return this.ingredientsList(context);
+   }
+
+   public async deleteIngredient(context: HttpContextContract): Promise<Ingredient[]> {
+      const { auth, params } = context;
+      await Ingredient
+         .query()
+         .where('id', params.id)
+         .where('user_id', auth.user!.id)
+         .delete();
 
       return this.ingredientsList(context);
    }
@@ -69,7 +93,7 @@ export default class FoodCalculator {
          const userId = auth.user!.id;
 
          return Menu.query()
-            .select('id', 'title', 'content', 'settings', 'is_current', 'updated_at')
+            .select('id', 'title', 'content', 'settings', 'is_current', 'updated_at', 'user_id')
             .where('user_id', userId)
             .orderBy('title');
       } catch {
@@ -85,12 +109,13 @@ export default class FoodCalculator {
    }
 
    public async updateMenu(context: HttpContextContract): Promise<Menu[]> {
-      const { params, request } = context;
+      const { auth, params, request } = context;
       const updatedData = request.all();
       updatedData.updated_at = new Date();
       await Menu
          .query()
          .where('id', params.id)
+         .where('user_id', auth.user!.id)
          .update(request.all());
 
       return this.menuList(context);

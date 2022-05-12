@@ -23,8 +23,10 @@ Route.get('api/ingredient', 'FoodCalculator.ingredientsList');
 Route.group(()=>{
    Route.post('api/dish', 'FoodCalculator.addDish');
    Route.put('api/dish/:id', 'FoodCalculator.editDish');
+   Route.delete('api/dish/:id', 'FoodCalculator.deleteDish');
    Route.post('api/ingredient', 'FoodCalculator.addIngredient');
    Route.put('api/ingredient/:id', 'FoodCalculator.editIngredient');
+   Route.delete('api/ingredient/:id', 'FoodCalculator.deleteIngredient');
    Route.post('api/menu', 'FoodCalculator.addMenu');
    Route.put('api/menu/:id/choose', 'FoodCalculator.chooseMenu');
    Route.put('api/menu/:id', 'FoodCalculator.updateMenu');

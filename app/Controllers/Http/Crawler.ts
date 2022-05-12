@@ -1,5 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { ModelObject } from '@ioc:Adonis/Lucid/Model';
+import { ModelObject } from '@ioc:Adonis/Lucid/Orm';
 import { JSDOM } from 'jsdom';
 import each from 'async/each';
 import got from 'got';
