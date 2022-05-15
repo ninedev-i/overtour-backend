@@ -12,8 +12,7 @@ export default class FoodCalculator {
       return Dish
          .query()
          .select('id', 'title', 'type', 'ingredients', 'user_id')
-         .whereIn('user_id', userIdArray)
-         .orderBy('title');
+         .whereIn('user_id', userIdArray);
    }
 
    public async addDish(context: HttpContextContract): Promise<Dish[]> {
@@ -46,7 +45,7 @@ export default class FoodCalculator {
    public async ingredientsList({ auth }: HttpContextContract): Promise<Ingredient[]> {
       const userIdArray = await this._getUserArray(auth);
       return Ingredient.query()
-         .select('id', 'title', 'type', 'user_id')
+         .select('id', 'title', 'type', 'count_caption', 'user_id')
          .whereIn('user_id', userIdArray)
          .orderBy('title');
    }
