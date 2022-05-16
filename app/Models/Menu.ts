@@ -14,7 +14,7 @@ export default class Menu extends BaseModel {
    @column({
       serialize: (value) => JSON.parse(value),
    })
-   public content: object[];
+   public content: string;
 
    @column({
       serialize: (value) => JSON.parse(value),

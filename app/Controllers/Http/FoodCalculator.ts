@@ -30,8 +30,31 @@ export default class FoodCalculator {
          .update(request.all());
    }
 
-   public async deleteDish(context: HttpContextContract): Promise<Dish[]> {
-      const { auth, params } = context;
+   public async deleteDish(context: HttpContextContract): Promise<{ current?: string, dishList: Dish[] }> {
+      const { auth, params, request } = context;
+      const currentTimetable = request.all().current;
+      const output = {
+         current: null,
+         dishList: [],
+      };
+      let isCurrentChanged = false;
+      const updatedCurrentMenu = currentTimetable.map((content) => {
+         content.dishes = content.meals.map((dish) => {
+            dish.menu = dish.menu.filter((dishMenu) => {
+               if (dishMenu.id === +params.id) {
+                  isCurrentChanged = true;
+                  return;
+               }
+               return dishMenu;
+            });
+            return dish;
+         });
+         return content;
+      });
+
+      if (isCurrentChanged) {
+         output.current = updatedCurrentMenu;
+      }
 
       await Dish
          .query()
@@ -39,7 +62,57 @@ export default class FoodCalculator {
          .where('user_id', auth.user!.id)
          .delete();
 
-      return this.dishList(context);
+      output.dishList = await this.dishList(context);
+
+      const menus = await Menu.query().where('user_id', auth.user!.id);
+      menus.forEach((menu) => {
+         let isMenuChanged = false;
+         const updatedMenu = JSON.parse(menu.content).map((content) => {
+            content.meals.map((dish) => {
+               dish.menu = dish.menu.filter((dishMenu) => {
+                  if (dishMenu.id === +params.id) {
+                     isMenuChanged = true;
+                     return;
+                  }
+                  return dishMenu;
+               });
+               return dish;
+            });
+            return content
+         })
+
+         if (isMenuChanged) {
+            menu.content = JSON.stringify(updatedMenu);
+            menu.save();
+         }
+      });
+
+      return output;
+   }
+
+   public async checkIsDishUsed({ auth, params, request }: HttpContextContract): Promise<string[]> {
+      const menus = await Menu.query().where('user_id', auth.user!.id);
+      const currentTimetable = JSON.parse(request.all().current);
+      let usedInMenus = new Set<string>();
+
+      const checkDishes = (timetables, menuTitle: string) => {
+         timetables.forEach((content) => {
+            content.meals.forEach((dish) => {
+               dish.menu.forEach((dishMenu) => {
+                  if (dishMenu.id === +params.id) {
+                     usedInMenus.add(menuTitle);
+                  }
+               });
+            });
+         });
+      };
+      checkDishes(currentTimetable, 'current');
+
+      menus.forEach((menu) => {
+         checkDishes(JSON.parse(menu.content), menu.title);
+      });
+
+      return Array.from(usedInMenus);
    }
 
    // Ingredients
