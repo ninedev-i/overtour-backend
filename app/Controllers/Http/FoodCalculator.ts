@@ -12,7 +12,8 @@ export default class FoodCalculator {
       return Dish
          .query()
          .select('id', 'title', 'type', 'ingredients', 'user_id')
-         .whereIn('user_id', userIdArray);
+         .whereIn('user_id', userIdArray)
+         .orderBy('title', 'asc');
    }
 
    public async addDish(context: HttpContextContract): Promise<Dish[]> {
@@ -94,7 +95,7 @@ export default class FoodCalculator {
          return Menu.query()
             .select('id', 'title', 'content', 'settings', 'is_current', 'updated_at', 'user_id')
             .where('user_id', userId)
-            .orderBy('title');
+            .orderBy('id');
       } catch {
          return [];
       }
