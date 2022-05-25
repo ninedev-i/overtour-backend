@@ -24,12 +24,12 @@ jobs:
           npm install
           npm run build
 
-      - name: Create env file
-        run: |
-          touch /build/.env
-          echo PORT=${{ secrets.PORT }} >> /build/.env
-          echo HOST=${{ secrets.HOST }} >> /build/.env
-          cat /build/.env
+#      - name: Create env file
+#        run: |
+#          touch /build/.env
+#          echo PORT=${{ secrets.PORT }} >> /build/.env
+#          echo HOST=${{ secrets.HOST }} >> /build/.env
+#          cat /build/.env
 
       - name: Deploy to Server
         uses: appleboy/scp-action@master
