@@ -1,0 +1,12 @@
+node_modules
+build
+coverage
+.DS_STORE
+.env
+tmp
+.idea
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
