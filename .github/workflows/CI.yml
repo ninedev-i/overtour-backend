@@ -15,17 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Create env file
-        run: |
-          touch .env
-          echo PORT=${{ secrets.PORT }} >> .env
-          echo HOST=${{ secrets.HOST }} >> .env
-          cat .env
-
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
       - name: Install and build
         run: |
           npm install
@@ -37,15 +26,15 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
-          strip_components: 1
-          target: ${{ secrets.REMOTE_TARGET }}
-          source: ".env,build/"
-          rm: true
+          source: "*"
+          target: /var/www/overtour-backend
 
-      - name: Run install on server
+      - name: Rebuild container
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
-          script: ${{ secrets.COMMAND }}
+          script: |
+            cd /var/www/overtour-backend
+            docker-compose up -d --build

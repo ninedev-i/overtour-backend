@@ -10,3 +10,4 @@ tmp
 public
 yarn-error.log
 package-lock.json
+.cache

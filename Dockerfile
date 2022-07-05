@@ -1,26 +1,26 @@
-ARG NODE_IMAGE=node:16.13.1-alpine
+FROM node:16.13.1-alpine as builder
 
-FROM $NODE_IMAGE AS base
-RUN apk --no-cache add dumb-init
-RUN mkdir -p /home/node/app && chown node:node /home/node/app
-WORKDIR /home/node/app
 USER node
-RUN mkdir tmp
 
-FROM base AS dependencies
-COPY --chown=node:node ./package*.json ./
-RUN npm ci
-COPY --chown=node:node . .
+RUN mkdir /home/node/app
 
-FROM dependencies AS build
-RUN node ace build --production
+WORKDIR /home/node/app
 
-FROM base AS production
-ENV NODE_ENV=production
-ENV PORT=$PORT
-ENV HOST=0.0.0.0
-COPY --chown=node:node ./package*.json ./
-RUN npm ci --production
-COPY --chown=node:node --from=build /home/node/app/build .
-EXPOSE $PORT
-CMD [ "dumb-init", "node", "server.js" ]
+COPY --chown=node:node package.json yarn.lock /home/node/app/
+
+RUN touch .env && yarn install --frozen-lockfile
+
+COPY --chown=node:node  . /home/node/app/
+
+RUN node ace build --production && cd build && yarn install --production
+
+FROM builder
+
+USER node
+
+COPY --chown=node:node --from=builder /home/node/app/build/node_modules ./node_modules
+COPY --chown=node:node --from=builder /home/node/app/build ./build
+
+EXPOSE 3333
+
+CMD sh -c 'cd build && node ace migration:run --force && node server.js'

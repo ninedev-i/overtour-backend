@@ -1,17 +1,18 @@
 version: '3.8'
 
 services:
-  adonis_app:
-    container_name: api.overtour.ru
+  api_overtour_ru:
+    container_name: api_overtour_ru
     restart: always
     build:
       context: .
-      target: dependencies
+      dockerfile: Dockerfile
     ports:
       - ${PORT}:${PORT}
-      - 9229:9229
     env_file:
       - .env
-    volumes:
-      - ./:/home/node/app
-    command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
+    networks:
+      - overtour
+networks:
+  overtour:
+    external: true
