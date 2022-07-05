@@ -1,7 +1,6 @@
 {
   "name": "overtour_backend",
   "version": "0.0.1",
-  "private": true,
   "author": "Victor Vedenin",
   "scripts": {
     "dev": "node ace serve --watch",
@@ -21,6 +20,7 @@
   },
   "dependencies": {
     "@adonisjs/ace": "^11.3.0",
+    "@adonisjs/application": "5.0.0",
     "@adonisjs/auth": "^8.1.0",
     "@adonisjs/core": "^5.8.0",
     "@adonisjs/lucid": "^17.2.0",
