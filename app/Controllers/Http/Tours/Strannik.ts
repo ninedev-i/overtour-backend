@@ -53,6 +53,7 @@ export default class Strannik extends BaseTour {
          this.getTitle(document);
          this.getDate([date_from, date_to]);
          this.getLink(document);
+         this.getTags(document);
       }
    }
 
@@ -117,6 +118,28 @@ export default class Strannik extends BaseTour {
    public getDifficulty(document: Element): void {
       try {
          this.difficulty = +document.querySelector('.tour_params .value').textContent.split('/')[0];
+      } catch (e) {
+         this.post.difficulty = e.message;
+      }
+   }
+
+   public getTags(document: Element): void {
+      const tagClasses = {
+         'icon-Plav-sredstva': 'water',
+         'icon-Peshkom': 'hiking',
+         'icon-S-ryukzakom': 'mountain',
+      }
+      try {
+         let tags = '';
+         const icons = document.querySelectorAll('.region-info .line_parameters .icon_way');
+         Array.from(icons).forEach(item => {
+            Object.keys(tagClasses).forEach(iconClass => {
+               if (item.classList.contains(iconClass)) {
+                  tags += `${tagClasses[iconClass]} `;
+               }
+            })
+         })
+         this.tags = tags.trim();
       } catch (e) {
          this.post.difficulty = e.message;
       }

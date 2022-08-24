@@ -24,6 +24,7 @@ export interface TourDraft {
    date_to: DateTime;
    club: number;
    link: string;
+   tags: string;
 }
 
 type TourLucidModel = Omit<IBaseTourProps, 'id' | 'type' | 'post' | 'date_from' | 'date_to'> & {
@@ -42,7 +43,7 @@ export default class BaseTour implements IBaseTourProps {
    public price: number = 0
    public difficulty: number = 0
    public region: string = ''
-   public tags: string[] = []
+   public tags: string = ''
    public link: string = ''
    public club: number = 0
    public type: string = 'draft'
@@ -56,6 +57,7 @@ export default class BaseTour implements IBaseTourProps {
          date_to: DateTime.fromISO(this.date_to),
          club: this.club,
          link: this.link,
+         tags: this.tags,
       }
    }
 

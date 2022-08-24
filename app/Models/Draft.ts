@@ -23,6 +23,9 @@ export default class Draft extends BaseModel {
    @column({})
    public type: string;
 
+   @column({})
+   public tags: string;
+
    // @column.dateTime({autoCreate: true})
    // public created_at: DateTime;
    //
