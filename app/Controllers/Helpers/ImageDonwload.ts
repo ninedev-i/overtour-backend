@@ -15,7 +15,7 @@ export async function downloadImage(url: string, id: number) {
    let imageUrl: string | Buffer = url;
 
    if (!existsSync(folder)) {
-      await mkdirSync(folder);
+      mkdirSync(folder, { recursive: true });
    }
 
    if (Array.isArray(url.match('data:image'))) {
