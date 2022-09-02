@@ -74,7 +74,9 @@ export default class Tours {
       });
    }
 
-   public async getAllDrafts() {
-      return Draft.query().orderBy('date_from', 'desc');
+   public async getAllDrafts({ request }: HttpContextContract) {
+      const { page } = request.all();
+      return Draft.query().orderBy('date_from', 'desc')
+         .paginate(page ?? 1, 40);
    }
 }
