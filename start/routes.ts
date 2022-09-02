@@ -9,13 +9,13 @@ Route.get('api/regions', 'Tours.getRegions');
 
 Route.any('api/tour', 'Tours.getTours');
 Route.get('api/tour/:id', 'Tours.getTour');
-Route.get('api/drafts', 'Tours.getAllDrafts');
 
 Route.group(()=>{
+   Route.get('api/drafts', 'Tours.getAllDrafts');
    Route.post('api/crawler/club_tours', 'Crawler.getClubTours');
    Route.post('api/crawler/tour_detail', 'Crawler.getTourDetails');
    Route.post('api/crawler/parse_details_by_club', 'Crawler.getDetailsByClub');
-})/*.middleware('auth')*/;
+}).middleware(['auth', 'admin']);
 
 Route.get('api/dish', 'FoodCalculator.dishList');
 Route.get('api/menu', 'FoodCalculator.menuList');
